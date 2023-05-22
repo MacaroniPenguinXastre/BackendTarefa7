@@ -23,18 +23,22 @@ public class Controller {
     private UserRepository userRepository;
 
     @GetMapping("/public/login")
-    public String loginPage(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<User> loginPage(@RequestBody LoginDTO loginDTO){
+        User logginUser = userRepository.findUserByEmail(loginDTO.email());
 
-
-        return "Funcionando";
+        if(logginUser == null || !securityConfig.passwordEncoder().matches(loginDTO.password(),logginUser.getPassword())){
+            System.out.println("ERROR: User or password invalid.");
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(logginUser);
     }
-
 
 
     @GetMapping("/user")
     public String logado(){
         return "TÁ LOGADO";
     }
+
     //200 se o usuário for salvo com sucesso, 400 se já existir um usuário
     @PostMapping("/public/register")
     public ResponseEntity<?> cadastrar(@RequestBody User user){
