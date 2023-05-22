@@ -30,6 +30,7 @@ public class Controller {
             System.out.println("ERROR: User or password invalid.");
             return ResponseEntity.badRequest().build();
         }
+
         return ResponseEntity.ok(logginUser);
     }
 
@@ -45,7 +46,6 @@ public class Controller {
         if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
             return ResponseEntity.badRequest().build();
         }
-
         user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
         userRepository.save(user);
 
