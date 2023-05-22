@@ -22,7 +22,7 @@ public class Controller {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/public/login")
+    @PostMapping("/public/login")
     public ResponseEntity<User> loginPage(@RequestBody LoginDTO loginDTO){
         User logginUser = userRepository.findUserByEmail(loginDTO.email());
 
@@ -30,8 +30,8 @@ public class Controller {
             System.out.println("ERROR: User or password invalid.");
             return ResponseEntity.badRequest().build();
         }
-
-        return ResponseEntity.ok(logginUser);
+        System.out.println("LOGADO");
+        return ResponseEntity.status(200).build();
     }
 
 
