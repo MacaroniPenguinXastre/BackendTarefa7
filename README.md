@@ -19,3 +19,21 @@ Repositório do backend da tarefa 7
 }
 ```
 Observação: a senha é automaticamente encriptada ao ser recebida no cadastro.
+
+### Cadastro de Curso
+```
+{
+  "titulo": "Curso de Programação",
+  "descricao": "Um curso abrangente de programação",
+  "cargaHorariaCurso": 40,
+  "mentor": {
+    "id": 2
+  },
+  "alunos": [
+    {
+      "id": 1
+    }
+  ],
+  "materialDidatico" : "Testando feature"
+}
+```
