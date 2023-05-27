@@ -6,9 +6,11 @@ import com.macaroni.projectonlinestudent.config.SecurityConfig;
 import com.macaroni.projectonlinestudent.model.CargoUser;
 import com.macaroni.projectonlinestudent.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ public class Controller {
     @Autowired
     private UserRepository userRepository;
 
+
     @PostMapping("/public/login")
     public ResponseEntity<User> loginPage(@RequestBody LoginDTO loginDTO){
         User logginUser = userRepository.findUserByEmail(loginDTO.email());
@@ -30,8 +33,8 @@ public class Controller {
             System.out.println("ERROR: User or password invalid.");
             return ResponseEntity.badRequest().build();
         }
-        System.out.println("LOGADO");
-        return ResponseEntity.status(200).build();
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(logginUser);
     }
 
 
@@ -44,11 +47,11 @@ public class Controller {
     @PostMapping("/public/register")
     public ResponseEntity<?> cadastrar(@RequestBody User user){
         if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
+            System.out.println("ERROR: email already exists");
             return ResponseEntity.badRequest().build();
         }
         user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
         userRepository.save(user);
-
         return ResponseEntity.ok().build();
     }
 

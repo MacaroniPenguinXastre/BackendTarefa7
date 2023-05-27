@@ -29,6 +29,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private CargoUser cargo;
 
+
     public String getNome() {
         return nome;
     }
