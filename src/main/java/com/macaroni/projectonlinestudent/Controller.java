@@ -68,6 +68,5 @@ public class Controller {
         cursoRepository.save(curso);
         return ResponseEntity.ok().build();
     }
-
-
+    //TODO: Permitir associar empresa parceira com curso
 }
