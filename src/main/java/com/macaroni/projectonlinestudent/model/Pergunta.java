@@ -1,9 +1,6 @@
 package com.macaroni.projectonlinestudent.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Pergunta {
@@ -11,7 +8,7 @@ public class Pergunta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String descricao;
+    private String enunciado;
 
     private String alternativaA;
 
@@ -23,12 +20,34 @@ public class Pergunta {
 
     private char alternativaCorreta;
 
-    public String getDescricao() {
-        return descricao;
+    @ManyToOne
+    private User mentor;
+
+
+    public User getMentor() {
+        return mentor;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setMentor(User mentor) {
+        this.mentor = mentor;
+    }
+
+    public char getAlternativaCorreta() {
+        return alternativaCorreta;
+    }
+
+
+    public void setAlternativaCorreta(char alternativaCorreta) {
+        this.alternativaCorreta = alternativaCorreta;
+    }
+
+
+    public String getEnunciado() {
+        return enunciado;
+    }
+
+    public void setEnunciado(String enunciado) {
+        this.enunciado = enunciado;
     }
 
     public String getAlternativaA() {
@@ -61,14 +80,6 @@ public class Pergunta {
 
     public void setAlternativaD(String alternativaD) {
         this.alternativaD = alternativaD;
-    }
-
-    public Character getAlternativaCorreta() {
-        return alternativaCorreta;
-    }
-
-    public void setAlternativaCorreta(Character alternativaCorreta) {
-        this.alternativaCorreta = alternativaCorreta;
     }
 
     public Long getId() {

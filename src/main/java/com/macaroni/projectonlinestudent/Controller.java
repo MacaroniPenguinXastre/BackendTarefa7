@@ -1,10 +1,11 @@
 package com.macaroni.projectonlinestudent;
 
 import com.macaroni.projectonlinestudent.DTO.LoginDTO;
+import com.macaroni.projectonlinestudent.Repository.CursoRepository;
+import com.macaroni.projectonlinestudent.Repository.PerguntaRepository;
 import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import com.macaroni.projectonlinestudent.config.SecurityConfig;
-import com.macaroni.projectonlinestudent.model.CargoUser;
-import com.macaroni.projectonlinestudent.model.User;
+import com.macaroni.projectonlinestudent.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 public class Controller {
@@ -24,6 +26,8 @@ public class Controller {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @PostMapping("/public/login")
     public ResponseEntity<User> loginPage(@RequestBody LoginDTO loginDTO){
@@ -37,22 +41,33 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(logginUser);
     }
 
-
-    @GetMapping("/user")
-    public String logado(){
-        return "TÁ LOGADO";
-    }
-
     //200 se o usuário for salvo com sucesso, 400 se já existir um usuário
     @PostMapping("/public/register")
     public ResponseEntity<?> cadastrar(@RequestBody User user){
         if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
-            System.out.println("ERROR: email already exists");
+            System.out.println("ERROR: Email already exists");
             return ResponseEntity.badRequest().build();
         }
         user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/curso/index/mentor")
+    public ResponseEntity<List<Curso>> allCourses(@RequestBody User user){
+        if(user == null || user.getId() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        List<Curso>allCourses = cursoRepository.findCursosByMentor(user);
+        return ResponseEntity.ok(allCourses);
+    }
+
+    @PostMapping("/curso/create")
+    public ResponseEntity<?> createCourses(@RequestBody Curso curso){
+
+        cursoRepository.save(curso);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.macaroni.projectonlinestudent.model;
 
 import jakarta.persistence.*;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -22,10 +23,25 @@ public class Curso {
     private User mentor;
 
     @ManyToMany
+    @Nullable
+    private List<User> empresaParceira;
+
+    @ManyToMany
     private List<User> alunos;
 
+    //Lob permite que Strings de grande tamanho consigam ser inseridas.
     @Lob
     private String materialDidatico;
+
+
+
+    public List<User> getEmpresaParceira() {
+        return empresaParceira;
+    }
+
+    public void setEmpresaParceira(List<User> empresaParceira) {
+        this.empresaParceira = empresaParceira;
+    }
 
     public String getTitulo() {
         return titulo;
@@ -43,14 +59,6 @@ public class Curso {
         this.descricao = descricao;
     }
 
-    public int getCargaHorariaTotal() {
-        return cargaHorariaCurso;
-    }
-
-    public void setCargaHorariaTotal(int cargaHorariaTotal) {
-        this.cargaHorariaCurso = cargaHorariaTotal;
-    }
-
     public User getMentor() {
         return mentor;
     }
@@ -61,6 +69,22 @@ public class Curso {
 
     public List<User> getAlunos() {
         return alunos;
+    }
+
+    public int getCargaHorariaCurso() {
+        return cargaHorariaCurso;
+    }
+
+    public void setCargaHorariaCurso(int cargaHorariaCurso) {
+        this.cargaHorariaCurso = cargaHorariaCurso;
+    }
+
+    public String getMaterialDidatico() {
+        return materialDidatico;
+    }
+
+    public void setMaterialDidatico(String materialDidatico) {
+        this.materialDidatico = materialDidatico;
     }
 
     public void setAlunos(List<User> alunos) {

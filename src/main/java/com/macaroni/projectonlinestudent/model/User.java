@@ -29,6 +29,16 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private CargoUser cargo;
 
+    public User(String nome, String email, String senha, CargoUser cargo) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.cargo = cargo;
+    }
+
+    public User() {
+
+    }
 
     public String getNome() {
         return nome;

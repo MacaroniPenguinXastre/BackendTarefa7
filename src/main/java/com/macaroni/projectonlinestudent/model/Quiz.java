@@ -15,6 +15,17 @@ public class Quiz {
     @ManyToMany
     private List<Pergunta> perguntas = new ArrayList<>();
 
+    @ManyToOne
+    private User mentor;
+
+
+    public User getMentor() {
+        return mentor;
+    }
+
+    public void setMentor(User mentor) {
+        this.mentor = mentor;
+    }
 
     public Long getId() {
         return id;
