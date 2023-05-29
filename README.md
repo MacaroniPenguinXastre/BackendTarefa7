@@ -14,6 +14,10 @@ cada endpoint.
 IMPORTANTE: Mesmo que não passe todas os campos, é no mínimo NECESSÁRIO que passe o ID no corpo da requisição. O ÚNICO que foge a regra, são as requisições que começam com o caminho: 
 ```/public```
 A seguir, serão listados como fazer a interação com a API. Os métodos são HTTP, mostrando o tipo de requisição HTTP, o endpoint e o JSON.
+
+OBSERVAÇÃO: As vezes, serão usados DTO. Eles são úteis por vários motivos, como segurança, deixa o código mais modular e fácil de se ler.
+Além disso, ele ajuda a contornar algumas pequenas "limitações" do Spring Boot 3.0, como por exemplo, não é possível em um endpoint pedir mais de um parâmetro no body, mas criando um único objeto que "abriga" outros, torna possível passar "múltiplos parâmetros". 
+
 ### Cadastro de usuário:
 MÉTODO: POST
 ENDPOINT: /public/register
@@ -66,3 +70,4 @@ A senha não precisa ser criptografada no login.
   "materialDidatico" : "Testando feature"
 }
 ```
+
