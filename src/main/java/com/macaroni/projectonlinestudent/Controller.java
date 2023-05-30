@@ -53,7 +53,8 @@ public class Controller {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/curso/index/mentor")
+
+    @GetMapping("/curso/index")
     public ResponseEntity<List<Curso>> allCourses(@RequestBody User user){
         if(user == null || user.getId() == null){
             return ResponseEntity.badRequest().build();
@@ -68,5 +69,8 @@ public class Controller {
         cursoRepository.save(curso);
         return ResponseEntity.ok().build();
     }
+
+
+
     //TODO: Permitir associar empresa parceira com curso
 }

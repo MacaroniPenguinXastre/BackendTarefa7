@@ -2,6 +2,8 @@ package com.macaroni.projectonlinestudent.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -17,13 +19,13 @@ public class Treinamento {
 
     private String descricao;
 
-    private Date dataInicioInscricao;
+    private ZonedDateTime dataInicioInscricao;
 
-    private Date dataFimInscricao;
+    private ZonedDateTime dataFimInscricao;
 
-    private Date dataInicioTreinamento;
+    private ZonedDateTime dataInicioTreinamento;
 
-    private Date dataFimTreinamento;
+    private ZonedDateTime dataFimTreinamento;
 
     private int quantidadeMinima;
 
@@ -73,35 +75,35 @@ public class Treinamento {
         this.descricao = descricao;
     }
 
-    public Date getDataInicioInscricao() {
+    public ZonedDateTime getDataInicioInscricao() {
         return dataInicioInscricao;
     }
 
-    public void setDataInicioInscricao(Date dataInicioInscricao) {
+    public void setDataInicioInscricao(ZonedDateTime dataInicioInscricao) {
         this.dataInicioInscricao = dataInicioInscricao;
     }
 
-    public Date getDataFimInscricao() {
+    public ZonedDateTime getDataFimInscricao() {
         return dataFimInscricao;
     }
 
-    public void setDataFimInscricao(Date dataFimInscricao) {
+    public void setDataFimInscricao(ZonedDateTime dataFimInscricao) {
         this.dataFimInscricao = dataFimInscricao;
     }
 
-    public Date getDataInicioTreinamento() {
+    public ZonedDateTime getDataInicioTreinamento() {
         return dataInicioTreinamento;
     }
 
-    public void setDataInicioTreinamento(Date dataInicioTreinamento) {
+    public void setDataInicioTreinamento(ZonedDateTime dataInicioTreinamento) {
         this.dataInicioTreinamento = dataInicioTreinamento;
     }
 
-    public Date getDataFimTreinamento() {
+    public ZonedDateTime getDataFimTreinamento() {
         return dataFimTreinamento;
     }
 
-    public void setDataFimTreinamento(Date dataFimTreinamento) {
+    public void setDataFimTreinamento(ZonedDateTime dataFimTreinamento) {
         this.dataFimTreinamento = dataFimTreinamento;
     }
 
@@ -175,9 +177,5 @@ public class Treinamento {
 
     public void setSegundoCase(Quiz segundoCase) {
         this.segundoCase = segundoCase;
-    }
-
-    public Long getId() {
-        return id;
     }
 }

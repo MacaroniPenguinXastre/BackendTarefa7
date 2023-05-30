@@ -18,6 +18,16 @@ public class Quiz {
     @ManyToOne
     private User mentor;
 
+    @ManyToMany
+    private List<Treinamento> treinamentosQuiz;
+
+    public List<Treinamento> getTreinamentosQuiz() {
+        return treinamentosQuiz;
+    }
+
+    public void setTreinamentosQuiz(List<Treinamento> treinamentosQuiz) {
+        this.treinamentosQuiz = treinamentosQuiz;
+    }
 
     public User getMentor() {
         return mentor;

@@ -26,14 +26,20 @@ public class Curso {
     @Nullable
     private List<User> empresaParceira;
 
-    @ManyToMany
-    private List<User> alunos;
-
     //Lob permite que Strings de grande tamanho consigam ser inseridas.
     @Lob
     private String materialDidatico;
 
+    @ManyToMany
+    private List<Treinamento> treinamentosCurso;
 
+    public List<Treinamento> getTreinamentosCurso() {
+        return treinamentosCurso;
+    }
+
+    public void setTreinamentosCurso(List<Treinamento> treinamentosCurso) {
+        this.treinamentosCurso = treinamentosCurso;
+    }
 
     public List<User> getEmpresaParceira() {
         return empresaParceira;
@@ -67,10 +73,6 @@ public class Curso {
         this.mentor = mentor;
     }
 
-    public List<User> getAlunos() {
-        return alunos;
-    }
-
     public int getCargaHorariaCurso() {
         return cargaHorariaCurso;
     }
@@ -85,10 +87,6 @@ public class Curso {
 
     public void setMaterialDidatico(String materialDidatico) {
         this.materialDidatico = materialDidatico;
-    }
-
-    public void setAlunos(List<User> alunos) {
-        this.alunos = alunos;
     }
 
     public Long getId() {

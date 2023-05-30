@@ -2,6 +2,8 @@ package com.macaroni.projectonlinestudent.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Pergunta {
     @Id
@@ -23,6 +25,17 @@ public class Pergunta {
     @ManyToOne
     private User mentor;
 
+    @ManyToMany
+    private List<Quiz> quizAssociados;
+
+
+    public List<Quiz> getQuizAssociados() {
+        return quizAssociados;
+    }
+
+    public void setQuizAssociados(List<Quiz> quizAssociados) {
+        this.quizAssociados = quizAssociados;
+    }
 
     public User getMentor() {
         return mentor;

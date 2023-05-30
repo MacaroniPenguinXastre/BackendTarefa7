@@ -16,15 +16,12 @@ public class QuizService {
 
     public HttpStatusCode adicionarPerguntaQuiz(Quiz quiz, Pergunta pergunta){
         quiz.getPerguntas().add(pergunta);
-        quizRepository.saveAndFlush(quiz);
+        quizRepository.save(quiz);
 
         return HttpStatusCode.valueOf(200);
     }
 
-    public HttpStatusCode deletarPerguntaQuiz(Quiz quiz,Pergunta pergunta){
-        quiz.getPerguntas().remove(pergunta);
-
-        quizRepository.saveAndFlush(quiz);
+    public HttpStatusCode corrigirSubmissao(){
         return HttpStatusCode.valueOf(200);
     }
 
