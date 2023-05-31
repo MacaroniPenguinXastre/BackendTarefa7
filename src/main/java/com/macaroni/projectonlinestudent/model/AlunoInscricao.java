@@ -45,6 +45,7 @@ public class AlunoInscricao {
     @Nullable
     private String observacao;
 
+
     public User getAluno() {
         return aluno;
     }

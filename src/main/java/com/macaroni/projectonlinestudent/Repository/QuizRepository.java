@@ -11,4 +11,7 @@ import java.util.List;
 public interface QuizRepository extends JpaRepository<Quiz,Long> {
 
     public List<Quiz>findQuizzesByMentor(User user);
+
+
+
 }

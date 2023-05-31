@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class QuizService {
 
@@ -16,6 +18,12 @@ public class QuizService {
 
     public HttpStatusCode adicionarPerguntaQuiz(Quiz quiz, Pergunta pergunta){
         quiz.getPerguntas().add(pergunta);
+        Optional<Quiz> updatedQuiz = Optional.ofNullable(quizRepository.findById(quiz.getId()).orElse(null));
+
+        if(updatedQuiz.isEmpty()){
+            return HttpStatusCode.valueOf(400);
+        }
+        updatedQuiz.get().getPerguntas().addAll(quiz.getPerguntas());
         quizRepository.save(quiz);
 
         return HttpStatusCode.valueOf(200);
