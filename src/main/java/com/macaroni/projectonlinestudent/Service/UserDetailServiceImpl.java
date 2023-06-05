@@ -1,8 +1,8 @@
 package com.macaroni.projectonlinestudent.Service;
 
 import com.macaroni.projectonlinestudent.Repository.UserRepository;
-import com.macaroni.projectonlinestudent.model.CargoUser;
-import com.macaroni.projectonlinestudent.model.User;
+import com.macaroni.projectonlinestudent.Model.CargoUser;
+import com.macaroni.projectonlinestudent.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

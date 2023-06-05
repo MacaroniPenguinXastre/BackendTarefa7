@@ -3,10 +3,9 @@ package com.macaroni.projectonlinestudent;
 import com.macaroni.projectonlinestudent.DTO.QuizPerguntaDTO;
 import com.macaroni.projectonlinestudent.Repository.QuizRepository;
 import com.macaroni.projectonlinestudent.Service.QuizService;
-import com.macaroni.projectonlinestudent.model.CargoUser;
-import com.macaroni.projectonlinestudent.model.Pergunta;
-import com.macaroni.projectonlinestudent.model.Quiz;
-import com.macaroni.projectonlinestudent.model.User;
+import com.macaroni.projectonlinestudent.Model.CargoUser;
+import com.macaroni.projectonlinestudent.Model.Quiz;
+import com.macaroni.projectonlinestudent.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class QuizController {
         if(user == null || user.getCargo().equals(CargoUser.ALUNO)){
             return ResponseEntity.status(403).build();
         }
-        List<Quiz>indexQuiz = quizRepository.findQuizzesByMentor(user);
+        List<Quiz>indexQuiz = quizRepository.findAll();
         return ResponseEntity.ok(indexQuiz);
     }
 
@@ -35,7 +34,6 @@ public class QuizController {
         if(quiz == null){
             return ResponseEntity.badRequest().build();
         }
-
         quizRepository.save(quiz);
         return ResponseEntity.ok().build();
     }
@@ -58,6 +56,7 @@ public class QuizController {
         if(quizPerguntaDTO.pergunta() == null || quizPerguntaDTO.quiz() == null){
             return ResponseEntity.badRequest().build();
         }
+
         if(quizPerguntaDTO.quiz().getPerguntas().contains(quizPerguntaDTO.pergunta())){
             quizPerguntaDTO.quiz().getPerguntas().remove(quizPerguntaDTO.pergunta());
             quizRepository.saveAndFlush(quizPerguntaDTO.quiz());

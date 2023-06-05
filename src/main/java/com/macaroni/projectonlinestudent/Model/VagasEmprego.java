@@ -1,4 +1,4 @@
-package com.macaroni.projectonlinestudent.model;
+package com.macaroni.projectonlinestudent.Model;
 
 import jakarta.persistence.*;
 

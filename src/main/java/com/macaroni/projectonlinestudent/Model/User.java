@@ -1,11 +1,9 @@
-package com.macaroni.projectonlinestudent.model;
+package com.macaroni.projectonlinestudent.Model;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Collection;
 import java.util.List;

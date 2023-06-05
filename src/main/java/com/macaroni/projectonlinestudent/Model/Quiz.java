@@ -1,4 +1,4 @@
-package com.macaroni.projectonlinestudent.model;
+package com.macaroni.projectonlinestudent.Model;
 
 import jakarta.persistence.*;
 
@@ -16,7 +16,7 @@ public class Quiz {
     private List<Pergunta> perguntas = new ArrayList<>();
 
     @ManyToOne
-    private User mentor;
+    private User admCriador;
 
     @ManyToMany
     private List<Treinamento> treinamentosQuiz;
@@ -29,12 +29,12 @@ public class Quiz {
         this.treinamentosQuiz = treinamentosQuiz;
     }
 
-    public User getMentor() {
-        return mentor;
+    public User getAdmCriador() {
+        return admCriador;
     }
 
-    public void setMentor(User mentor) {
-        this.mentor = mentor;
+    public void setAdmCriador(User mentor) {
+        this.admCriador = mentor;
     }
 
     public Long getId() {

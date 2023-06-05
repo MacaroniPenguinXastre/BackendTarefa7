@@ -1,7 +1,7 @@
 package com.macaroni.projectonlinestudent.DTO;
 
-import com.macaroni.projectonlinestudent.model.Treinamento;
-import com.macaroni.projectonlinestudent.model.User;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.macaroni.projectonlinestudent.Model.Treinamento;
+import com.macaroni.projectonlinestudent.Model.User;
 
 public record TreinamentoDTO(User user, Treinamento treinamento){}
+

@@ -2,9 +2,12 @@ package com.macaroni.projectonlinestudent;
 
 import com.macaroni.projectonlinestudent.DTO.TreinamentoDTO;
 import com.macaroni.projectonlinestudent.Repository.TreinamentoRepository;
+import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import com.macaroni.projectonlinestudent.Service.TreinamentoService;
 import com.macaroni.projectonlinestudent.Service.UserDetailServiceImpl;
-import com.macaroni.projectonlinestudent.model.Treinamento;
+import com.macaroni.projectonlinestudent.config.SecurityConfig;
+import com.macaroni.projectonlinestudent.Model.Treinamento;
+import com.macaroni.projectonlinestudent.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,12 @@ public class AdminController {
     @Autowired
     private TreinamentoService treinamentoService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SecurityConfig securityConfig;
+
     @GetMapping("/treinamento/index")
     public ResponseEntity<List<Treinamento>> showAllTreinamentos(@RequestBody TreinamentoDTO treinamentoDTO){
         if(treinamentoDTO == null){
@@ -36,6 +45,17 @@ public class AdminController {
         }
         List<Treinamento>allTreinamentos = treinamentoRepository.findAll();
         return ResponseEntity.ok().body(allTreinamentos);
+    }
+
+    @PostMapping("/adm/registerUser")
+    public ResponseEntity<?> cadastrar(@RequestBody User user){
+        if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
+            System.out.println("ERROR: Email already exists");
+            return ResponseEntity.badRequest().build();
+        }
+        user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/treinamento/create")
@@ -60,4 +80,6 @@ public class AdminController {
 
         return ResponseEntity.ok().build();
     }
+
+
 }

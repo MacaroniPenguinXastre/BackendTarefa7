@@ -1,6 +1,7 @@
-package com.macaroni.projectonlinestudent.model;
+package com.macaroni.projectonlinestudent.Model;
 
 import jakarta.persistence.*;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -23,9 +24,10 @@ public class Pergunta {
     private char alternativaCorreta;
 
     @ManyToOne
-    private User mentor;
+    private User admCriador;
 
     @ManyToMany
+    @Nullable
     private List<Quiz> quizAssociados;
 
 
@@ -37,12 +39,12 @@ public class Pergunta {
         this.quizAssociados = quizAssociados;
     }
 
-    public User getMentor() {
-        return mentor;
+    public User getAdmCriador() {
+        return admCriador;
     }
 
-    public void setMentor(User mentor) {
-        this.mentor = mentor;
+    public void setAdmCriador(User mentor) {
+        this.admCriador = mentor;
     }
 
     public char getAlternativaCorreta() {

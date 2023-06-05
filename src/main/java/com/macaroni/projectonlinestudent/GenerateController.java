@@ -3,19 +3,13 @@ package com.macaroni.projectonlinestudent;
 import com.macaroni.projectonlinestudent.Repository.PerguntaRepository;
 import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import com.macaroni.projectonlinestudent.config.SecurityConfig;
-import com.macaroni.projectonlinestudent.model.CargoUser;
-import com.macaroni.projectonlinestudent.model.Pergunta;
-import com.macaroni.projectonlinestudent.model.Quiz;
-import com.macaroni.projectonlinestudent.model.User;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import com.macaroni.projectonlinestudent.Model.CargoUser;
+import com.macaroni.projectonlinestudent.Model.Pergunta;
+import com.macaroni.projectonlinestudent.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class GenerateController {
@@ -27,7 +21,7 @@ public class GenerateController {
 
     @Autowired
     private UserRepository userRepository;
-
+    User admin = new User("ADMIN","admin@email.com","sudo",CargoUser.ADM);
     User alunoA = new User("Lucas","lucas@email.com","123", CargoUser.ALUNO);
     User alunoB = new User("Batata","batata@email.com","1234",CargoUser.ALUNO);
     User professorA = new User("Xastre","xastre@email.com","2525",CargoUser.MENTOR);
@@ -37,7 +31,7 @@ public class GenerateController {
 
     @GetMapping("/generateUser")
     public ResponseEntity<?> createUser(){
-
+        admin.setSenha(securityConfig.passwordEncoder().encode(admin.getSenha()));
         alunoA.setSenha(securityConfig.passwordEncoder().encode(alunoA.getSenha()));
         alunoB.setSenha(securityConfig.passwordEncoder().encode(alunoB.getSenha()));
         professorA.setSenha(securityConfig.passwordEncoder().encode(alunoB.getSenha()));
@@ -45,6 +39,7 @@ public class GenerateController {
         empresaA.setSenha(securityConfig.passwordEncoder().encode(empresaA.getSenha()));
         empresaB.setSenha(securityConfig.passwordEncoder().encode(empresaB.getSenha()));
 
+        userRepository.save(admin);
         userRepository.save(alunoA);
         userRepository.save(alunoB);
         userRepository.save(professorA);
@@ -65,7 +60,7 @@ public class GenerateController {
         pergunta.setAlternativaC("Rio de Janeiro");
         pergunta.setAlternativaD("Lôndres");
         pergunta.setAlternativaCorreta('B');
-        pergunta.setMentor(professorA);
+        pergunta.setAdmCriador(professorA);
 
         perguntaRepository.save(pergunta);
 
@@ -76,7 +71,7 @@ public class GenerateController {
         perguntaB.setAlternativaC("Anão");
         perguntaB.setAlternativaD("Nível Sato");
         perguntaB.setAlternativaCorreta('D');
-        perguntaB.setMentor(professorB);
+        perguntaB.setAdmCriador(professorB);
 
         perguntaRepository.save(pergunta);
         perguntaRepository.save(perguntaB);

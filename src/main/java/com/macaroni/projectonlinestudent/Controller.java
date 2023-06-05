@@ -2,20 +2,14 @@ package com.macaroni.projectonlinestudent;
 
 import com.macaroni.projectonlinestudent.DTO.LoginDTO;
 import com.macaroni.projectonlinestudent.Repository.CursoRepository;
-import com.macaroni.projectonlinestudent.Repository.PerguntaRepository;
 import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import com.macaroni.projectonlinestudent.config.SecurityConfig;
-import com.macaroni.projectonlinestudent.model.*;
+import com.macaroni.projectonlinestudent.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -48,6 +42,8 @@ public class Controller {
             System.out.println("ERROR: Email already exists");
             return ResponseEntity.badRequest().build();
         }
+
+        user.setCargo(CargoUser.ALUNO);
         user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
         userRepository.save(user);
         return ResponseEntity.ok().build();
@@ -59,7 +55,7 @@ public class Controller {
         if(user == null || user.getId() == null){
             return ResponseEntity.badRequest().build();
         }
-        List<Curso>allCourses = cursoRepository.findCursosByMentor(user);
+        List<Curso>allCourses = cursoRepository.findAll();
         return ResponseEntity.ok(allCourses);
     }
 

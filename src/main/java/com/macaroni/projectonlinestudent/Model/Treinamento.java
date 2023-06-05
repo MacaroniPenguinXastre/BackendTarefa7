@@ -1,10 +1,8 @@
-package com.macaroni.projectonlinestudent.model;
+package com.macaroni.projectonlinestudent.Model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -37,19 +35,18 @@ public class Treinamento {
     @ManyToMany
     private List<Curso> faseIntrodutorio;
 
-    private int cargaHorariaNecessariaPrimeiroCase;
-
     @ManyToOne
     private Quiz primeiroCase;
 
     @ManyToMany
     private List<Curso> faseAvancada;
 
-    private int cargaHorariaNecessariaSegundoCase;
-
     @ManyToOne
     private Quiz segundoCase;
 
+    public Long getId() {
+        return id;
+    }
 
     public int getCargaHorariaTotal() {
         return cargaHorariaTotal;
@@ -139,14 +136,6 @@ public class Treinamento {
         this.faseIntrodutorio = faseIntrodutorio;
     }
 
-    public int getCargaHorariaNecessariaPrimeiroCase() {
-        return cargaHorariaNecessariaPrimeiroCase;
-    }
-
-    public void setCargaHorariaNecessariaPrimeiroCase(int cargaHorariaNecessariaPrimeiroCase) {
-        this.cargaHorariaNecessariaPrimeiroCase = cargaHorariaNecessariaPrimeiroCase;
-    }
-
     public Quiz getPrimeiroCase() {
         return primeiroCase;
     }
@@ -161,14 +150,6 @@ public class Treinamento {
 
     public void setFaseAvancada(List<Curso> faseAvancada) {
         this.faseAvancada = faseAvancada;
-    }
-
-    public int getCargaHorariaNecessariaSegundoCase() {
-        return cargaHorariaNecessariaSegundoCase;
-    }
-
-    public void setCargaHorariaNecessariaSegundoCase(int cargaHorariaNecessariaSegundoCase) {
-        this.cargaHorariaNecessariaSegundoCase = cargaHorariaNecessariaSegundoCase;
     }
 
     public Quiz getSegundoCase() {
