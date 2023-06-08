@@ -21,7 +21,7 @@ public class Pergunta {
 
     private String alternativaD;
 
-    private char alternativaCorreta;
+    private Character alternativaCorreta;
 
     @ManyToOne
     private User admCriador;
@@ -31,6 +31,7 @@ public class Pergunta {
     private List<Quiz> quizAssociados;
 
 
+    @Nullable
     public List<Quiz> getQuizAssociados() {
         return quizAssociados;
     }
@@ -47,12 +48,12 @@ public class Pergunta {
         this.admCriador = mentor;
     }
 
-    public char getAlternativaCorreta() {
+    public Character getAlternativaCorreta() {
         return alternativaCorreta;
     }
 
 
-    public void setAlternativaCorreta(char alternativaCorreta) {
+    public void setAlternativaCorreta(Character alternativaCorreta) {
         this.alternativaCorreta = alternativaCorreta;
     }
 

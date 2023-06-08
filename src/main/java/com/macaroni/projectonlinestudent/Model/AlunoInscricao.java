@@ -24,18 +24,29 @@ public class AlunoInscricao {
     @Enumerated(EnumType.STRING)
     private StatusTreinamento statusTreino;
 
-    @ManyToMany
+    @OneToMany
     @Nullable
-    private List<Submissoes> submissoes;
+    private List<Submissao> submissoes;
 
     private ZonedDateTime dataInscricao;
 
-
-    public List<Submissoes> getAtividadesAlunos() {
+    @Nullable
+    public List<Submissao> getSubmissoes() {
         return submissoes;
     }
 
-    public void setAtividadesAlunos(List<Submissoes> submissoes) {
+    public void setSubmissoes(@Nullable List<Submissao> submissoes) {
+        this.submissoes = submissoes;
+    }
+
+    public Long getId() {
+        return id;
+    }
+    public List<Submissao> getAtividadesAlunos() {
+        return submissoes;
+    }
+
+    public void setAtividadesAlunos(List<Submissao> submissoes) {
         this.submissoes = submissoes;
     }
 

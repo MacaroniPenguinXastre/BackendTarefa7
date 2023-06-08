@@ -39,15 +39,16 @@ public class PerguntaController {
 
     @DeleteMapping("/pergunta/delete")
     public ResponseEntity<String> deleteQuest(@RequestBody PerguntaMentorDTO perguntaMentorDTO){
-        if(perguntaMentorDTO == null){
-            return ResponseEntity.badRequest().body("Null parameters");
+        try {
+            if(perguntaMentorDTO.pergunta().getQuizAssociados().size() > 0){
+                return ResponseEntity.status(409).body("Question is associated with one or more Quizzes.");
+            }
+            perguntaRepository.delete(perguntaMentorDTO.pergunta());
+            return ResponseEntity.ok().body("Deleted successfully");
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
-        if(perguntaMentorDTO.pergunta().getQuizAssociados().size() > 0){
-            return ResponseEntity.status(409).body("Question is associated with one or more Quizzes.");
-        }
-
-        perguntaRepository.delete(perguntaMentorDTO.pergunta());
-        return ResponseEntity.ok().body("Deleted successfully");
     }
 
 }

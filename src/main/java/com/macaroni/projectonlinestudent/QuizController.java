@@ -25,6 +25,7 @@ public class QuizController {
         if(user == null || user.getCargo().equals(CargoUser.ALUNO)){
             return ResponseEntity.status(403).build();
         }
+
         List<Quiz>indexQuiz = quizRepository.findAll();
         return ResponseEntity.ok(indexQuiz);
     }
@@ -40,29 +41,35 @@ public class QuizController {
 
     @PostMapping("/quiz/question/add")
     public ResponseEntity<?> associateQuestion(@RequestBody QuizPerguntaDTO quizPerguntaDTO){
-        if(quizPerguntaDTO.pergunta() == null || quizPerguntaDTO.quiz() == null){
+        try{
+            if(quizService.adicionarPerguntaQuiz(quizPerguntaDTO.quiz(), quizPerguntaDTO.pergunta()).value() == 200){
+                return ResponseEntity.ok().build();
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-
-        if(quizService.adicionarPerguntaQuiz(quizPerguntaDTO.quiz(), quizPerguntaDTO.pergunta()).value() == 200){
-            return ResponseEntity.ok().build();
-        }
-
         return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/quiz/question/delete")
     public ResponseEntity<?> removeQuestionFromQuiz(@RequestBody QuizPerguntaDTO quizPerguntaDTO){
-        if(quizPerguntaDTO.pergunta() == null || quizPerguntaDTO.quiz() == null){
+        try{
+            Quiz quiz = quizRepository.getReferenceById(quizPerguntaDTO.quiz().getId());
+
+            if(quiz.getPerguntas().contains(quizPerguntaDTO.pergunta())){
+                quiz.getPerguntas().remove(quizPerguntaDTO.pergunta());
+                quizRepository.saveAndFlush(quiz);
+                return ResponseEntity.ok().build();
+            }
+
+            return ResponseEntity.notFound().build();
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
 
-        if(quizPerguntaDTO.quiz().getPerguntas().contains(quizPerguntaDTO.pergunta())){
-            quizPerguntaDTO.quiz().getPerguntas().remove(quizPerguntaDTO.pergunta());
-            quizRepository.saveAndFlush(quizPerguntaDTO.quiz());
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
     }
 
 }

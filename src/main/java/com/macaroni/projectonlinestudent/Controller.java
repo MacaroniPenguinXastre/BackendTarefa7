@@ -38,35 +38,47 @@ public class Controller {
     //200 se o usuário for salvo com sucesso, 400 se já existir um usuário
     @PostMapping("/public/register")
     public ResponseEntity<?> cadastrar(@RequestBody User user){
-        if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
-            System.out.println("ERROR: Email already exists");
+        try {
+            if(userRepository.findUserByEmail(user.getEmail()) != null){
+                return ResponseEntity.status(409).build();
+            }
+            if(user.getEmail().isBlank()){
+                return ResponseEntity.badRequest().build();
+            }
+
+            user.setCargo(CargoUser.ALUNO);
+            user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
+            userRepository.save(user);
+        }
+        catch (NullPointerException e){
             return ResponseEntity.badRequest().build();
         }
-
-        user.setCargo(CargoUser.ALUNO);
-        user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
-        userRepository.save(user);
         return ResponseEntity.ok().build();
     }
 
 
-    @GetMapping("/curso/index")
+    @GetMapping("/cursos")
     public ResponseEntity<List<Curso>> allCourses(@RequestBody User user){
-        if(user == null || user.getId() == null){
+        try{
+            if(!user.getCargo().equals(CargoUser.ADM)){
+                return ResponseEntity.status(403).build();
+            }
+            List<Curso>cursoList = cursoRepository.findAll();
+            return ResponseEntity.ok().body(cursoList);
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-        List<Curso>allCourses = cursoRepository.findAll();
-        return ResponseEntity.ok(allCourses);
     }
 
-    @PostMapping("/curso/create")
+    @PostMapping("/cursos")
     public ResponseEntity<?> createCourses(@RequestBody Curso curso){
-
+        if(curso == null){
+            return ResponseEntity.badRequest().build();
+        }
         cursoRepository.save(curso);
         return ResponseEntity.ok().build();
     }
 
-
-
-    //TODO: Permitir associar empresa parceira com curso
 }

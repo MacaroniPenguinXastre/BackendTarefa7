@@ -10,12 +10,10 @@ import com.macaroni.projectonlinestudent.Model.Treinamento;
 import com.macaroni.projectonlinestudent.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class AdminController {
@@ -35,7 +33,7 @@ public class AdminController {
     @Autowired
     private SecurityConfig securityConfig;
 
-    @GetMapping("/treinamento/index")
+    @GetMapping("/adm/treinamentos")
     public ResponseEntity<List<Treinamento>> showAllTreinamentos(@RequestBody TreinamentoDTO treinamentoDTO){
         if(treinamentoDTO == null){
             return ResponseEntity.badRequest().build();
@@ -47,39 +45,61 @@ public class AdminController {
         return ResponseEntity.ok().body(allTreinamentos);
     }
 
-    @PostMapping("/adm/registerUser")
-    public ResponseEntity<?> cadastrar(@RequestBody User user){
-        if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
-            System.out.println("ERROR: Email already exists");
-            return ResponseEntity.badRequest().build();
+    @GetMapping("adm/treinamentos/{id}")
+    public ResponseEntity<Treinamento>getTreinamento(@PathVariable Long id){
+        Optional<Treinamento> treinamento = treinamentoRepository.findById(id);
+        if(treinamento.isPresent()){
+            return ResponseEntity.ok().body(treinamento.get());
         }
-        user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
-        userRepository.save(user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/treinamento/create")
+    @PostMapping("/adm/treinamentos")
     public ResponseEntity<?> createTreinamento(@RequestBody TreinamentoDTO treinamentoDTO){
         if(treinamentoDTO == null){
             return ResponseEntity.badRequest().build();
         }
 
-        Treinamento newTreinamento = treinamentoDTO.treinamento();
+        try{
+            Treinamento newTreinamento = treinamentoDTO.treinamento();
 
-        if(!userDetailService.isAdm(treinamentoDTO.user())){
-            return ResponseEntity.status(403).build();
+            if(!userDetailService.isAdm(treinamentoDTO.user())){
+                return ResponseEntity.status(403).build();
+            }
+
+            if(treinamentoService.checkDate(treinamentoDTO.treinamento().getDataInicioTreinamento(), treinamentoDTO.treinamento().getDataFimTreinamento())
+                    || treinamentoService.checkDate(treinamentoDTO.treinamento().getDataInicioInscricao(), treinamentoDTO.treinamento().getDataFimInscricao())){
+                return ResponseEntity.status(409).build();
+            }
+            newTreinamento = treinamentoService.convertToSPZone(newTreinamento);
+            treinamentoRepository.save(newTreinamento);
+            return ResponseEntity.ok().build();
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
 
-        if(treinamentoService.checkDate(treinamentoDTO.treinamento().getDataInicioTreinamento(), treinamentoDTO.treinamento().getDataFimTreinamento())
-        || treinamentoService.checkDate(treinamentoDTO.treinamento().getDataInicioInscricao(), treinamentoDTO.treinamento().getDataFimInscricao())){
-            return ResponseEntity.status(409).build();
-        }
 
-        newTreinamento = treinamentoService.convertToSPZone(newTreinamento);
-        treinamentoRepository.save(newTreinamento);
-
-        return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/adm/users")
+    public ResponseEntity<?> cadastrar(@RequestBody User user) {
+        try {
+            User registeredUser = userRepository.findUserByEmail(user.getEmail());
+            if (registeredUser != null) {
+                return ResponseEntity.status(409).build();
+            }
+            user.setSenha(securityConfig.passwordEncoder().encode(user.getSenha()));
+            registeredUser = user;
+
+            userRepository.save(registeredUser);
+
+            return ResponseEntity.ok().build();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 }

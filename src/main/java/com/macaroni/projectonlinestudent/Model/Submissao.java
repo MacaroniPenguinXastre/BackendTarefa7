@@ -3,11 +3,12 @@ package com.macaroni.projectonlinestudent.Model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Entity
-public class Submissoes {
+public class Submissao {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToMany
@@ -20,15 +21,16 @@ public class Submissoes {
     private List<Quiz> quizzes;
 
     private int nota;
+    @ElementCollection
+    private Map<Pergunta, Character>respostas;
 
-    private String resposta;
 
-    public String getResposta() {
-        return resposta;
+    public Map<Pergunta, Character> getRespostas() {
+        return respostas;
     }
 
-    public void setResposta(String resposta) {
-        this.resposta = resposta;
+    public void setRespostas(Map<Pergunta, Character> respostas) {
+        this.respostas = respostas;
     }
 
     public List<User> getAluno() {
