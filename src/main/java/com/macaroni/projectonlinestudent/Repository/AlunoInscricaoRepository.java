@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface AlunoInscricaoRepository extends JpaRepository<AlunoInscricao, Long> {
-    public List<AlunoInscricao>findAlunoInscricaosByAluno(User user);
+    public List<AlunoInscricao>findAlunoInscricaosByAluno_Id(Long id);
 
     AlunoInscricao findAlunoInscricaoByAlunoAndTreinamento(User user,Treinamento treinamento);
 

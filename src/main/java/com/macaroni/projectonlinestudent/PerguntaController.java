@@ -17,18 +17,25 @@ public class PerguntaController {
     @Autowired
     private PerguntaRepository perguntaRepository;
 
-    @GetMapping("/pergunta/index")
-    public ResponseEntity<List<Pergunta>> showAllQuestByUser(@RequestBody User user){
-        if(user == null || !user.getCargo().equals(CargoUser.ADM)){
-            System.out.println("Usuário não tem autorização");
-            return ResponseEntity.status(403).build();
-        }
+    @GetMapping("/perguntas")
+    public ResponseEntity<List<Pergunta>> showAllQuests(@RequestBody User user){
+        try{
+            if(!user.getCargo().equals(CargoUser.ADM)){
+                System.out.println("Usuário não tem autorização");
+                return ResponseEntity.status(403).build();
+            }
 
-        List<Pergunta>perguntaUserList = perguntaRepository.findAll();
-        return ResponseEntity.ok().body(perguntaUserList);
+            List<Pergunta>perguntaUserList = perguntaRepository.findAll();
+            return ResponseEntity.ok().body(perguntaUserList);
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    @PostMapping("/pergunta/create")
+
+    @PostMapping("/perguntas")
     public ResponseEntity<?> createQuest(@RequestBody Pergunta pergunta){
         if(pergunta == null || pergunta.getAdmCriador() == null){
             return ResponseEntity.badRequest().build();
@@ -37,7 +44,7 @@ public class PerguntaController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/pergunta/delete")
+    @DeleteMapping("/perguntas")
     public ResponseEntity<String> deleteQuest(@RequestBody PerguntaMentorDTO perguntaMentorDTO){
         try {
             if(perguntaMentorDTO.pergunta().getQuizAssociados().size() > 0){

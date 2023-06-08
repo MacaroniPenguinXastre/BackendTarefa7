@@ -39,10 +39,7 @@ public class Controller {
     @PostMapping("/public/register")
     public ResponseEntity<?> cadastrar(@RequestBody User user){
         try {
-            if(userRepository.findUserByEmail(user.getEmail()) != null){
-                return ResponseEntity.status(409).build();
-            }
-            if(user.getEmail().isBlank()){
+            if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
                 return ResponseEntity.badRequest().build();
             }
 

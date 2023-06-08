@@ -11,14 +11,14 @@ public class Submissao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
-    private List<User> aluno;
+    @ManyToOne
+    private User aluno;
 
-    @ManyToMany
-    private List<Treinamento> treinamentos;
+    @ManyToOne
+    private Treinamento treinamentos;
 
-    @ManyToMany
-    private List<Quiz> quizzes;
+    @ManyToOne
+    private Quiz quiz;
 
     private int nota;
     @ElementCollection
@@ -33,28 +33,28 @@ public class Submissao {
         this.respostas = respostas;
     }
 
-    public List<User> getAluno() {
+    public User getAluno() {
         return aluno;
     }
 
-    public void setAluno(List<User> aluno) {
+    public void setAluno(User aluno) {
         this.aluno = aluno;
     }
 
-    public List<Treinamento> getTreinamentos() {
+    public Treinamento getTreinamentos() {
         return treinamentos;
     }
 
-    public void setTreinamentos(List<Treinamento> treinamentos) {
+    public void setTreinamentos(Treinamento treinamentos) {
         this.treinamentos = treinamentos;
     }
 
-    public List<Quiz> getQuizzes() {
-        return quizzes;
+    public Quiz getQuiz() {
+        return quiz;
     }
 
-    public void setQuizzes(List<Quiz> quizzes) {
-        this.quizzes = quizzes;
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
     }
 
     public int getNota() {
