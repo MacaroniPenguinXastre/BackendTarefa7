@@ -9,5 +9,9 @@ import java.util.List;
 
 @Repository
 public interface SubmissaoRepository extends JpaRepository<Submissao,Long> {
-    List<Submissao>findSubmissaosByAluno_Id(Long id);
+    List<Submissao>findSubmissaosByAluno(Long id);
+
+    List<Submissao>findFirst10ByAluno_Id(Long id);
+
+
 }

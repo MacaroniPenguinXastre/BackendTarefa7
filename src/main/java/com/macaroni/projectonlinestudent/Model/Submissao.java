@@ -24,7 +24,6 @@ public class Submissao {
     @ElementCollection
     private Map<Pergunta, Character>respostas;
 
-
     public Map<Pergunta, Character> getRespostas() {
         return respostas;
     }
