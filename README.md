@@ -43,12 +43,12 @@ ENDPOINT: /public/login
 ```
 {
     "email" : "",
-    "senha" : ""
+    "password" : ""
 }
 
 {
     "email" : "marcio@email.com",
-    "senha" : "12345"
+    "password" : "12345"
 }
 ```
 A senha não precisa ser criptografada no login.
