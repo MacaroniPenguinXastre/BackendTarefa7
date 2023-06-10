@@ -7,6 +7,5 @@ import java.time.ZoneId;
 public class Values {
     public ZoneId defaultZone = ZoneId.of("America/Sao_Paulo");
 
-    //Indica que a tarefa não foi feita
-    public int notInit = -1;
+    public int notDone = -1;
 }

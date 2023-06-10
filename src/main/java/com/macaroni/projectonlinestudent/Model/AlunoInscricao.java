@@ -19,35 +19,48 @@ public class AlunoInscricao {
     @ManyToOne
     private Treinamento treinamento;
 
-    private int faseAtual;
+    @OneToOne
+    private Submissao quizIntroducao;
+
+    @OneToOne
+    private Submissao caseOne;
+
+    @OneToOne
+    private Submissao caseTwo;
 
     @Enumerated(EnumType.STRING)
     private StatusTreinamento statusTreino;
 
-    @OneToMany
-    @Nullable
-    private List<Submissao> submissoes;
-
     private ZonedDateTime dataInscricao;
 
-    @Nullable
-    public List<Submissao> getSubmissoes() {
-        return submissoes;
+    public Submissao getQuizIntroducao() {
+        return quizIntroducao;
     }
 
-    public void setSubmissoes(@Nullable List<Submissao> submissoes) {
-        this.submissoes = submissoes;
+    public void setQuizIntroducao(Submissao quizIntroducao) {
+        this.quizIntroducao = quizIntroducao;
+    }
+
+
+    public Submissao getCaseOne() {
+        return caseOne;
+    }
+
+    public void setCaseOne(Submissao caseOne) {
+        this.caseOne = caseOne;
+    }
+
+
+    public Submissao getCaseTwo() {
+        return caseTwo;
+    }
+
+    public void setCaseTwo(Submissao caseTwo) {
+        this.caseTwo = caseTwo;
     }
 
     public Long getId() {
         return id;
-    }
-    public List<Submissao> getAtividadesAlunos() {
-        return submissoes;
-    }
-
-    public void setAtividadesAlunos(List<Submissao> submissoes) {
-        this.submissoes = submissoes;
     }
 
     public User getAluno() {
@@ -64,14 +77,6 @@ public class AlunoInscricao {
 
     public void setTreinamento(Treinamento treinamento) {
         this.treinamento = treinamento;
-    }
-
-    public int getFaseAtual() {
-        return faseAtual;
-    }
-
-    public void setFaseAtual(int faseAtual) {
-        this.faseAtual = faseAtual;
     }
 
     public StatusTreinamento getStatusTreino() {

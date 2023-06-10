@@ -1,6 +1,7 @@
 package com.macaroni.projectonlinestudent;
 
 import com.macaroni.projectonlinestudent.DTO.TreinamentoDTO;
+import com.macaroni.projectonlinestudent.Model.CargoUser;
 import com.macaroni.projectonlinestudent.Repository.TreinamentoRepository;
 import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import com.macaroni.projectonlinestudent.Service.TreinamentoService;
@@ -34,11 +35,11 @@ public class AdminController {
     private SecurityConfig securityConfig;
 
     @GetMapping("/adm/treinamentos")
-    public ResponseEntity<List<Treinamento>> showAllTreinamentos(@RequestBody TreinamentoDTO treinamentoDTO){
-        if(treinamentoDTO == null){
+    public ResponseEntity<List<Treinamento>> showAllTreinamentos(@RequestBody User user){
+        if(user == null){
             return ResponseEntity.badRequest().build();
         }
-        if(!userDetailService.isAdm(treinamentoDTO.user())){
+        if(!user.getCargo().equals(CargoUser.ADM)){
             return ResponseEntity.status(403).build();
         }
         List<Treinamento>allTreinamentos = treinamentoRepository.findAll();

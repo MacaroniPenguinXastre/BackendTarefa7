@@ -45,8 +45,8 @@ public class AlunoTreinamentoController {
         return ResponseEntity.ok().body(allAvailable);
     }
 
-    //Lista todas as inscrições de um aluno
-    @GetMapping("aluno/{id}/treinamentos")
+    //Lista todas as inscrições por um aluno
+    @GetMapping("aluno/{id}/inscricao")
     public ResponseEntity<List<AlunoInscricao>> listAllSubscribeTreinamentos(@PathVariable("id")Long userID){
         try{
             List<AlunoInscricao>inscricoes = alunoInscricaoRepository.findAlunoInscricaosByAluno_Id(userID);
@@ -58,7 +58,7 @@ public class AlunoTreinamentoController {
     }
 
     //Detalhe da inscrição feita por um aluno.
-    @GetMapping("/aluno/treinamentos/{id}")
+    @GetMapping("/aluno/inscricao/{id}")
     public ResponseEntity<AlunoInscricao>inscricaoDetails(@PathVariable("id")Long id){
 
         Optional<AlunoInscricao> alunoInscricao = alunoInscricaoRepository.findById(id);
@@ -69,7 +69,7 @@ public class AlunoTreinamentoController {
     }
 
     //Faz inscrição de um aluno em um treinamento
-    @PostMapping("aluno/{alunoID}/treinamentos/{treinamentoID}")
+    @PostMapping("aluno/{alunoID}/treinamentos/{treinamentoID}/inscricao")
     public ResponseEntity<?>subscribeAluno(@PathVariable("alunoID")Long alunoID,@PathVariable("treinamentoID")Long treinoID){
         try{
             Optional<User>aluno = userRepository.findById(alunoID);
@@ -86,15 +86,14 @@ public class AlunoTreinamentoController {
 
             if(inscricao == null){
                 inscricao = new AlunoInscricao();
-
                 inscricao.setAluno(aluno.get());
                 inscricao.setTreinamento(treinamento.get());
                 inscricao.setDataInscricao(ZonedDateTime.now(values.defaultZone));
-                inscricao.setFaseAtual(1);
                 inscricao.setStatusTreino(StatusTreinamento.INSCRITO);
                 alunoInscricaoRepository.save(inscricao);
                 return ResponseEntity.ok().body(inscricao);
             }
+
             inscricao.setStatusTreino(StatusTreinamento.INSCRITO);
             alunoInscricaoRepository.save(inscricao);
             return ResponseEntity.ok().body(inscricao);
@@ -104,54 +103,61 @@ public class AlunoTreinamentoController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     //Faz submissão de um quiz
-    @PostMapping("aluno/{alunoID}/treinamentos/{treinamentoID}/quizzes/{quizID}/submissao")
-    public ResponseEntity<?>corrigirQuiz(@PathVariable("alunoID")Long alunoID,
-                                         @PathVariable("treinamentoID")Long treinamentoID,
-                                         @PathVariable("quizID")Long quizID,
+    @PostMapping("/inscricao/{inscricaoID}/submissao/{submissaoID}")
+    public ResponseEntity<?>corrigirQuiz(@PathVariable("inscricaoID")Long inscricaoID,
+                                         @PathVariable("submissaoID")Long submissaoID,
                                          @RequestBody QuizRespostasDTO quizRespostasDTO){
         try{
-            User aluno = userRepository.getReferenceById(alunoID);
-            Treinamento treinamento = treinamentoRepository.getReferenceById(treinamentoID);
-            Quiz quiz = quizRepository.getReferenceById(quizID);
+            Optional<AlunoInscricao>alunoInscricao = alunoInscricaoRepository.findById(inscricaoID);
+            Optional<Submissao>submissao = submissaoRepository.findById(submissaoID);
 
-            Submissao submissao = new Submissao();
-            submissao.setNota(0);
-
-            Map<Long, Character> respostasSubmetidas = quizRespostasDTO.respostas();
-            if(ZonedDateTime.now(values.defaultZone).isAfter(treinamento.getDataFimTreinamento())){
+            if(alunoInscricao.isEmpty() || submissao.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
+            //Se o aluno já fez o teste OU tentou fazer uma submissão APÓS o fim do treinamento, a submissão não é realizada
+            if(ZonedDateTime.now(values.defaultZone).isAfter(alunoInscricao.get().getTreinamento().getDataFimTreinamento()) ||
+                    submissao.get().getNota() != values.notDone){
                 return ResponseEntity.status(409).build();
             }
 
-            for(Map.Entry<Long, Character> entry : respostasSubmetidas.entrySet()) {
+            Quiz quiz = submissao.get().getQuiz();
+
+            Map<Long, Character> respostasSubmetidas = quizRespostasDTO.respostas();
+            double quantidadeAcertos = 0;
+            int totalQuestoes = quiz.getPerguntas().size();
+
+            for(Map.Entry<Long, Character> entry : respostasSubmetidas.entrySet()){
                 Long perguntaId = entry.getKey();
                 Character alternativaAluno = entry.getValue();
-                Optional<Pergunta>pergunta = perguntaRepository.findById(perguntaId);
 
+                Optional<Pergunta>pergunta = perguntaRepository.findById(perguntaId);
                 //Se a pergunta referenciada existir, verifica se foi digitado a alternativa correta.
                 if(pergunta.isPresent()){
                     if(pergunta.get().getAlternativaCorreta().equals(alternativaAluno)){
-                        submissao.setNota(submissao.getNota() + 1);
+                        quantidadeAcertos++;
                     }
 
                     //Adiciona referência a pergunta
-                    submissao.getRespostas().put(pergunta.get(),alternativaAluno);
+                    submissao.get().getRespostas().put(pergunta.get(),alternativaAluno);
                 }
+
             }
-                submissao.setAluno(aluno);
-                submissao.setTreinamentos(treinamento);
-                submissao.setQuiz(quiz);
-                submissaoRepository.save(submissao);
+
+                double nota = (quantidadeAcertos/(double)totalQuestoes)*100;
+                submissao.get().setNota((int)nota);
+
+                submissaoRepository.save(submissao.get());
                 return ResponseEntity.ok().build();
         }
+
         catch (NullPointerException e){
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-
     }
-
-    //200 se achou, 204 se não tem nada e 400 se o parâmetro foi mal passado.
+    //200 se achou, 204 se não tem nada e 400 se o parâmetro foi passado incorretamente.
     @GetMapping("aluno/{id}/submissoes")
     public ResponseEntity<List<Submissao>>listAlunoSubmissoes(@PathVariable("id")Long alunoID){
         try{

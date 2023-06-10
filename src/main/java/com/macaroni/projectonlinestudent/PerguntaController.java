@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class PerguntaController {
@@ -34,25 +35,37 @@ public class PerguntaController {
         }
     }
 
+    @GetMapping("/perguntas/{id}")
+    public ResponseEntity<Pergunta>questDetails(@PathVariable("id")Long id){
+        Optional<Pergunta>pergunta = perguntaRepository.findById(id);
+        if(pergunta.isPresent()){
+            return ResponseEntity.ok().body(pergunta.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
 
     @PostMapping("/perguntas")
     public ResponseEntity<?> createQuest(@RequestBody Pergunta pergunta){
-        if(pergunta == null || pergunta.getAdmCriador() == null){
+        try {
+            if(!pergunta.getAdmCriador().getCargo().equals(CargoUser.ADM)){
+                return ResponseEntity.status(403).build();
+            }
+            return ResponseEntity.ok().build();
+        }catch (NullPointerException e){
             return ResponseEntity.badRequest().build();
         }
-        perguntaRepository.saveAndFlush(pergunta);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/perguntas")
     public ResponseEntity<String> deleteQuest(@RequestBody PerguntaMentorDTO perguntaMentorDTO){
         try {
-            if(perguntaMentorDTO.pergunta().getQuizAssociados().size() > 0){
+            if(perguntaMentorDTO.pergunta().getQuizAssociados()!= null ||perguntaMentorDTO.pergunta().getQuizAssociados().size() > 0){
                 return ResponseEntity.status(409).body("Question is associated with one or more Quizzes.");
             }
             perguntaRepository.delete(perguntaMentorDTO.pergunta());
             return ResponseEntity.ok().body("Deleted successfully");
-        }catch (NullPointerException e){
+        }
+        catch (NullPointerException e){
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }

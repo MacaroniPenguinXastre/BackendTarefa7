@@ -55,9 +55,7 @@ public class GenerateController {
         pergunta.setAlternativaC("Rio de Janeiro");
         pergunta.setAlternativaD("Lôndres");
         pergunta.setAlternativaCorreta('B');
-        pergunta.setAdmCriador(users.get(0));
-
-        perguntaRepository.save(pergunta);
+        pergunta.setAdmCriador(userRepository.findUserByEmail("admin@email.com"));
 
         Pergunta perguntaB = new Pergunta();
         perguntaB.setEnunciado("Quão baixo é o Veigar ?");
@@ -66,7 +64,7 @@ public class GenerateController {
         perguntaB.setAlternativaC("Anão");
         perguntaB.setAlternativaD("Nível Sato");
         perguntaB.setAlternativaCorreta('D');
-        perguntaB.setAdmCriador(users.get(0));
+        perguntaB.setAdmCriador(userRepository.findUserByEmail("admin@email.com"));
 
         perguntaRepository.save(pergunta);
         perguntaRepository.save(perguntaB);

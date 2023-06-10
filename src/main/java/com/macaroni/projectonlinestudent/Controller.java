@@ -25,20 +25,26 @@ public class Controller {
 
     @PostMapping("/public/login")
     public ResponseEntity<User> loginPage(@RequestBody LoginDTO loginDTO){
-        User logginUser = userRepository.findUserByEmail(loginDTO.email());
+        try{
+            User logginUser = userRepository.findUserByEmail(loginDTO.email());
+            if(logginUser == null || !securityConfig.passwordEncoder().matches(loginDTO.password(),logginUser.getPassword())){
+                System.out.println("ERROR: User or password invalid.");
+                return ResponseEntity.badRequest().build();
+            }
 
-        if(logginUser == null || !securityConfig.passwordEncoder().matches(loginDTO.password(),logginUser.getPassword())){
-            System.out.println("ERROR: User or password invalid.");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(logginUser);
+
+        }
+        catch(NullPointerException e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(logginUser);
     }
 
     //200 se o usuário for salvo com sucesso, 400 se já existir um usuário
     @PostMapping("/public/register")
     public ResponseEntity<?> cadastrar(@RequestBody User user){
-        try {
+        try{
             if(userRepository.findUserByEmail(user.getEmail()) != null || user.getEmail().isBlank()){
                 return ResponseEntity.badRequest().build();
             }

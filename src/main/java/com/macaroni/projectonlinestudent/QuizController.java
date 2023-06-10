@@ -45,7 +45,7 @@ public class QuizController {
             if(quiz.isPresent()){
                 return ResponseEntity.ok().body(quiz.get());
             }
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.noContent().build();
         }
         catch(NullPointerException e){
             e.printStackTrace();
