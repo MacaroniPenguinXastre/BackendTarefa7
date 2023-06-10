@@ -153,6 +153,138 @@ Cargos precisam estar EXATAMENTE do mesmo formato acima.
 }
 ```
 
+- SUBMISSÃO
+
+```
+{
+  "id": 1,
+  "aluno": {
+    "id": 1,
+    "nome": "Maria Silva",
+    "email": "maria@example.com",
+    "senha": "********",
+    "cargo": "ALUNO"
+  },
+  "treinamentos": {
+    "id": 1,
+    "cargaHorariaTotal": 40,
+    "nomeComercial": "Treinamento de Programação",
+    "descricao": "Treinamento avançado de programação",
+    "dataInicioInscricao": "2023-07-01T10:00:00Z",
+    "dataFimInscricao": "2023-07-10T18:00:00Z",
+    "dataInicioTreinamento": "2023-07-15T09:00:00Z",
+    "dataFimTreinamento": "2023-07-30T18:00:00Z",
+    "quantidadeMinima": 5,
+    "quantidadeMaxima": 20,
+    "testeAptidao": null,
+    "faseIntrodutorio": [],
+    "primeiroCase": null,
+    "faseAvancada": [],
+    "segundoCase": null
+  },
+  "quiz": {
+    "id": 1,
+    "perguntas": [],
+    "admCriador": {
+      "id": 2,
+      "nome": "Admin",
+      "email": "admin@example.com",
+      "senha": "********",
+      "cargo": "ADM"
+    },
+    "treinamentosQuiz": []
+  },
+  "nota": 90,
+  "respostas": {
+    "pergunta1": "A",
+    "pergunta2": "B",
+    "pergunta3": "C"
+  }
+}
+```
+- ALUNO INSCRIÇÃO
+
+```
+{
+  "id": 1,
+  "aluno": {
+    "id": 1,
+    "nome": "João Silva",
+    "email": "joao@example.com",
+    "senha": "********",
+    "cargo": "ALUNO"
+  },
+  "treinamento": {
+    "id": 1,
+    "cargaHorariaTotal": 40,
+    "nomeComercial": "Treinamento de Programação",
+    "descricao": "Treinamento avançado de programação",
+    "dataInicioInscricao": "2023-07-01T10:00:00Z",
+    "dataFimInscricao": "2023-07-10T18:00:00Z",
+    "dataInicioTreinamento": "2023-07-15T09:00:00Z",
+    "dataFimTreinamento": "2023-07-30T18:00:00Z",
+    "quantidadeMinima": 5,
+    "quantidadeMaxima": 20,
+    "testeAptidao": null,
+    "faseIntrodutorio": [],
+    "primeiroCase": null,
+    "faseAvancada": [],
+    "segundoCase": null
+  },
+  "quizIntroducao": {
+    "id": 1,
+    "aluno": {
+      "id": 1,
+      "nome": "João Silva",
+      "email": "joao@example.com",
+      "senha": "********",
+      "cargo": "ALUNO"
+    },
+    "treinamentos": {
+      "id": 1,
+      "cargaHorariaTotal": 40,
+      "nomeComercial": "Treinamento de Programação",
+      "descricao": "Treinamento avançado de programação",
+      "dataInicioInscricao": "2023-07-01T10:00:00Z",
+      "dataFimInscricao": "2023-07-10T18:00:00Z",
+      "dataInicioTreinamento": "2023-07-15T09:00:00Z",
+      "dataFimTreinamento": "2023-07-30T18:00:00Z",
+      "quantidadeMinima": 5,
+      "quantidadeMaxima": 20,
+      "testeAptidao": null,
+      "faseIntrodutorio": [],
+      "primeiroCase": null,
+      "faseAvancada": [],
+      "segundoCase": null
+    },
+    "quiz": {
+      "id": 1,
+      "perguntas": [],
+      "admCriador": {
+        "id": 2,
+        "nome": "Admin",
+        "email": "admin@example.com",
+        "senha": "********",
+        "cargo": "ADM"
+      },
+      "treinamentosQuiz": []
+    },
+    "nota": 90,
+    "respostas": {
+      "pergunta1": "A",
+      "pergunta2": "B",
+      "pergunta3": "C"
+    }
+  },
+  "caseOne": null,
+  "caseTwo": null,
+  "statusTreino": "INSCRITO",
+  "dataInscricao": "2023-07-05T14:30:00Z"
+}
+
+```
+
+
 ### Cadastro de usuário:
 MÉTODO: POST
 
