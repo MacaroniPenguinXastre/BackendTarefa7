@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SubmissaoRepository extends JpaRepository<Submissao,Long> {
     List<Submissao>findSubmissaosByAluno(Long id);
 
-    List<Submissao>findFirst10ByAluno_Id(Long id);
-
+    Optional<List<Submissao>>findFirst10ByAluno_IdOrderByIdDesc(Long id);
 
 }

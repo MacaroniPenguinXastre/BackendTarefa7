@@ -36,14 +36,17 @@ public class AdminController {
 
     @GetMapping("/adm/treinamentos")
     public ResponseEntity<List<Treinamento>> showAllTreinamentos(@RequestBody User user){
-        if(user == null){
+        try {
+            if(!user.getCargo().equals(CargoUser.ADM)){
+                return ResponseEntity.status(403).build();
+            }
+            List<Treinamento>allTreinamentos = treinamentoRepository.findAll();
+            return ResponseEntity.ok().body(allTreinamentos);
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-        if(!user.getCargo().equals(CargoUser.ADM)){
-            return ResponseEntity.status(403).build();
-        }
-        List<Treinamento>allTreinamentos = treinamentoRepository.findAll();
-        return ResponseEntity.ok().body(allTreinamentos);
     }
 
     @GetMapping("adm/treinamentos/{id}")

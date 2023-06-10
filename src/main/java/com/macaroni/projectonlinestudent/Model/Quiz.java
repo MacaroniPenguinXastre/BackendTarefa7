@@ -12,6 +12,9 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    private String titulo;
+
     @ManyToMany
     private List<Pergunta> perguntas = new ArrayList<>();
 
@@ -20,6 +23,14 @@ public class Quiz {
 
     @ManyToMany
     private List<Treinamento> treinamentosQuiz;
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
     public List<Treinamento> getTreinamentosQuiz() {
         return treinamentosQuiz;

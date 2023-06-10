@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class Controller {
@@ -84,4 +85,24 @@ public class Controller {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/cursos/{id}")
+    public ResponseEntity<Curso>cursoDetails(@PathVariable("id")Long id){
+        Optional<Curso>curso = cursoRepository.findById(id);
+        if(curso.isPresent()){
+            return ResponseEntity.ok().body(curso.get());
+        }
+        return ResponseEntity.badRequest().build();
+    }
+    @DeleteMapping("/cursos/{id}")
+    public ResponseEntity<?>eraseCurso(@PathVariable("id")Long id){
+        Optional<Curso>curso = cursoRepository.findById(id);
+        if(curso.isPresent()){
+            if(!curso.get().getTreinamentosCurso().isEmpty()){
+                return ResponseEntity.status(409).build();
+            }
+            cursoRepository.deleteById(curso.get().getId());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

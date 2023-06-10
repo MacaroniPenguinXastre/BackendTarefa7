@@ -39,7 +39,7 @@ public class AlunoTreinamentoController {
     @Autowired
     private PerguntaRepository perguntaRepository;
 
-    @GetMapping("/treinamentos/avaliable")
+    @GetMapping("/treinamentos/available")
     public ResponseEntity<List<Treinamento>> listAllAvailableTreinamentos(){
         List<Treinamento>allAvailable = treinamentoRepository.findTreinamentosByDataFimInscricaoBefore(ZonedDateTime.now(values.defaultZone));
         return ResponseEntity.ok().body(allAvailable);
@@ -118,7 +118,7 @@ public class AlunoTreinamentoController {
             }
             //Se o aluno já fez o teste OU tentou fazer uma submissão APÓS o fim do treinamento, a submissão não é realizada
             if(ZonedDateTime.now(values.defaultZone).isAfter(alunoInscricao.get().getTreinamento().getDataFimTreinamento()) ||
-                    submissao.get().getNota() != values.notDone){
+                    submissao.get().getNota() != values.notDone || alunoInscricao.get().getStatusTreino().equals(StatusTreinamento.REPROVADO)){
                 return ResponseEntity.status(409).build();
             }
 
@@ -142,13 +142,21 @@ public class AlunoTreinamentoController {
                     //Adiciona referência a pergunta
                     submissao.get().getRespostas().put(pergunta.get(),alternativaAluno);
                 }
-
             }
-
                 double nota = (quantidadeAcertos/(double)totalQuestoes)*100;
+
+                //Verifica se é teste de aptidão, se for, reprova o aluno caso a nota seja baixa.
+                if(submissao.get().equals(alunoInscricao.get().getQuizIntroducao())){
+                    if(nota < 70){
+                        alunoInscricao.get().setStatusTreino(StatusTreinamento.REPROVADO);
+                    }
+                }
+
                 submissao.get().setNota((int)nota);
 
                 submissaoRepository.save(submissao.get());
+                alunoInscricaoRepository.save(alunoInscricao.get());
+
                 return ResponseEntity.ok().build();
         }
 
