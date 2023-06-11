@@ -5,10 +5,12 @@ import com.macaroni.projectonlinestudent.Repository.PerguntaRepository;
 import com.macaroni.projectonlinestudent.Model.CargoUser;
 import com.macaroni.projectonlinestudent.Model.Pergunta;
 import com.macaroni.projectonlinestudent.Model.User;
+import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +18,20 @@ import java.util.Optional;
 public class PerguntaController {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private PerguntaRepository perguntaRepository;
 
-    @GetMapping("/perguntas")
-    public ResponseEntity<List<Pergunta>> showAllQuests(@RequestBody User user){
+    @GetMapping("/adm/{id}/perguntas")
+    public ResponseEntity<List<Pergunta>> showAllQuests(@PathVariable("id")Long id){
         try{
-            if(!user.getCargo().equals(CargoUser.ADM)){
+            Optional<User>user = Optional.of(userRepository.getReferenceById(id));
+            if(user.isEmpty()){
+                throw new NullPointerException();
+            }
+
+            if(!user.get().getCargo().equals(CargoUser.ADM)){
                 System.out.println("Usuário não tem autorização");
                 return ResponseEntity.status(403).build();
             }
@@ -50,19 +60,26 @@ public class PerguntaController {
             if(!pergunta.getAdmCriador().getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }
+            pergunta.setQuizAssociados(new ArrayList<>(0));
+            perguntaRepository.save(pergunta);
             return ResponseEntity.ok().build();
         }catch (NullPointerException e){
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @DeleteMapping("/perguntas")
-    public ResponseEntity<String> deleteQuest(@RequestBody PerguntaMentorDTO perguntaMentorDTO){
+    @DeleteMapping("/adm/{id}/perguntas/{idPergunta}")
+    public ResponseEntity<String> deleteQuest(@PathVariable("id")Long idAdm,@PathVariable("idPergunta")Long idPergunta){
         try {
-            if(perguntaMentorDTO.pergunta().getQuizAssociados()!= null ||perguntaMentorDTO.pergunta().getQuizAssociados().size() > 0){
+            Optional<User>user = Optional.of(userRepository.getReferenceById(idAdm));
+            Optional<Pergunta>pergunta = Optional.of(perguntaRepository.getReferenceById(idPergunta));
+            if(user.isEmpty() || pergunta.isEmpty()){
+                throw new NullPointerException();
+            }
+            if(!pergunta.get().getQuizAssociados().isEmpty()){
                 return ResponseEntity.status(409).body("Question is associated with one or more Quizzes.");
             }
-            perguntaRepository.delete(perguntaMentorDTO.pergunta());
+            perguntaRepository.delete(pergunta.get());
             return ResponseEntity.ok().body("Deleted successfully");
         }
         catch (NullPointerException e){

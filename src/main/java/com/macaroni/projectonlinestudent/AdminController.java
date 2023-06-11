@@ -88,7 +88,7 @@ public class AdminController {
     }
 
     @PostMapping("/adm/users")
-    public ResponseEntity<?> cadastrar(@RequestBody User user) {
+    public ResponseEntity<?> cadastrar(@RequestBody User user){
         try {
             User registeredUser = userRepository.findUserByEmail(user.getEmail());
             if (registeredUser != null) {

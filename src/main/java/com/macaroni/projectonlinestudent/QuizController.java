@@ -1,17 +1,16 @@
 package com.macaroni.projectonlinestudent;
 
 import com.macaroni.projectonlinestudent.DTO.QuizPerguntaDTO;
-import com.macaroni.projectonlinestudent.Model.Pergunta;
+import com.macaroni.projectonlinestudent.Model.*;
 import com.macaroni.projectonlinestudent.Repository.PerguntaRepository;
 import com.macaroni.projectonlinestudent.Repository.QuizRepository;
+import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import com.macaroni.projectonlinestudent.Service.QuizService;
-import com.macaroni.projectonlinestudent.Model.CargoUser;
-import com.macaroni.projectonlinestudent.Model.Quiz;
-import com.macaroni.projectonlinestudent.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,14 +22,20 @@ public class QuizController {
     @Autowired
     private PerguntaRepository perguntaRepository;
 
-    @GetMapping("/quizzes")
-    public ResponseEntity<List<Quiz>> indexQuizByUser(@RequestBody User user){
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping("/adm/{id}/quizzes")
+    public ResponseEntity<List<Quiz>> indexQuizByUser(@PathVariable("id")Long id){
         try{
-            if(!user.getCargo().equals(CargoUser.ADM)){
+            Optional<User>user = Optional.of(userRepository.getReferenceById(id));
+            if(!user.get().getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }
+
             List<Quiz>indexQuiz = quizRepository.findAll();
-            return ResponseEntity.ok(indexQuiz);
+
+            return ResponseEntity.ok().body(indexQuiz);
         }
         catch (NullPointerException e){
             e.printStackTrace();
@@ -58,9 +63,12 @@ public class QuizController {
         if(quiz == null){
             return ResponseEntity.badRequest().build();
         }
+        List<Treinamento>treinamento = new ArrayList<>(0);
+        quiz.setTreinamentosQuiz(treinamento);
         quizRepository.save(quiz);
         return ResponseEntity.ok().build();
     }
+
 
     @PostMapping("/quizzes/{quizId}/pergunta/{perguntaID}")
     public ResponseEntity<?> associateQuestion(@PathVariable("quizId")Long quizID,@PathVariable("perguntaID")Long perguntaID){

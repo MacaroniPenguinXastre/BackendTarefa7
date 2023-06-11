@@ -16,7 +16,7 @@ public class Quiz {
     private String titulo;
 
     @ManyToMany
-    private List<Pergunta> perguntas = new ArrayList<>();
+    private List<Pergunta> perguntas;
 
     @ManyToOne
     private User admCriador;

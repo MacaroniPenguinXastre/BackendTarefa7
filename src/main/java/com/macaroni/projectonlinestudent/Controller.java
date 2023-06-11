@@ -1,6 +1,7 @@
 package com.macaroni.projectonlinestudent;
 
 import com.macaroni.projectonlinestudent.DTO.LoginDTO;
+import com.macaroni.projectonlinestudent.DTO.TreinamentoDTO;
 import com.macaroni.projectonlinestudent.Repository.CursoRepository;
 import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import com.macaroni.projectonlinestudent.config.SecurityConfig;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,10 +63,12 @@ public class Controller {
     }
 
 
-    @GetMapping("/cursos")
-    public ResponseEntity<List<Curso>> allCourses(@RequestBody User user){
+    @GetMapping("/adm/{id}/cursos")
+    public ResponseEntity<List<Curso>> allCourses(@PathVariable("id")Long id){
         try{
-            if(!user.getCargo().equals(CargoUser.ADM)){
+            User user = userRepository.getReferenceById(id);
+
+            if(user == null || !user.getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }
             List<Curso>cursoList = cursoRepository.findAll();
@@ -78,10 +82,19 @@ public class Controller {
 
     @PostMapping("/cursos")
     public ResponseEntity<?> createCourses(@RequestBody Curso curso){
-        if(curso == null){
+        try {
+            if(curso == null){
+                throw new NullPointerException();
+            }
+
+            List<Treinamento>treinamentos = new ArrayList<>(0);
+            curso.setTreinamentosCurso(treinamentos);
+            cursoRepository.save(curso);
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-        cursoRepository.save(curso);
         return ResponseEntity.ok().build();
     }
 
@@ -94,7 +107,12 @@ public class Controller {
         return ResponseEntity.badRequest().build();
     }
     @DeleteMapping("/cursos/{id}")
-    public ResponseEntity<?>eraseCurso(@PathVariable("id")Long id){
+    public ResponseEntity<?>eraseCurso(@PathVariable("id")Long id,@RequestBody User user){
+        Optional<User>isAdm = Optional.of(user);
+        if(isAdm.isEmpty() || !isAdm.get().getCargo().equals(CargoUser.ADM)){
+            return ResponseEntity.status(403).build();
+        }
+
         Optional<Curso>curso = cursoRepository.findById(id);
         if(curso.isPresent()){
             if(!curso.get().getTreinamentosCurso().isEmpty()){
@@ -103,6 +121,7 @@ public class Controller {
             cursoRepository.deleteById(curso.get().getId());
             return ResponseEntity.ok().build();
         }
+
         return ResponseEntity.badRequest().build();
     }
 }

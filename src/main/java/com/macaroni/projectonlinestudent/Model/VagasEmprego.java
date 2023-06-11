@@ -1,6 +1,7 @@
 package com.macaroni.projectonlinestudent.Model;
 
 import jakarta.persistence.*;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -9,15 +10,16 @@ public class VagasEmprego {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    //
     private String titulo;
+    //
     @ManyToOne
     private User empresa;
 
     private String atividades;
 
-    @ManyToMany
-    private List<Treinamento> treinamentoRequisito;
+    @ManyToOne
+    private Treinamento treinamentoRequisito;
 
     private Double faixaSalarial;
 
@@ -52,11 +54,11 @@ public class VagasEmprego {
         this.atividades = atividades;
     }
 
-    public List<Treinamento> getTreinamentoRequisito() {
+    public Treinamento getTreinamentoRequisito() {
         return treinamentoRequisito;
     }
 
-    public void setTreinamentoRequisito(List<Treinamento> treinamentoRequisito) {
+    public void setTreinamentoRequisito(Treinamento treinamentoRequisito) {
         this.treinamentoRequisito = treinamentoRequisito;
     }
 
@@ -67,6 +69,7 @@ public class VagasEmprego {
     public void setFaixaSalarial(Double faixaSalarial) {
         this.faixaSalarial = faixaSalarial;
     }
+
 
     public List<User> getCandidatos() {
         return candidatos;

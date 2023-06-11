@@ -1,6 +1,7 @@
 package com.macaroni.projectonlinestudent.Model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Nationalized;
 
 import java.util.List;
 
@@ -20,18 +21,17 @@ public class Curso {
     private User admCriador;
 
     //Lob permite que Strings de grande tamanho consigam ser inseridas.
+
+    @Column(columnDefinition = "text")
     @Lob
     private String materialDidatico;
 
     @ManyToMany
     private List<Treinamento> treinamentosCurso;
 
-    public List<Treinamento> getTreinamentosCurso() {
-        return treinamentosCurso;
-    }
 
-    public void setTreinamentosCurso(List<Treinamento> treinamentosCurso) {
-        this.treinamentosCurso = treinamentosCurso;
+    public Long getId() {
+        return id;
     }
 
     public String getTitulo() {
@@ -54,8 +54,8 @@ public class Curso {
         return admCriador;
     }
 
-    public void setAdmCriador(User mentor) {
-        this.admCriador = mentor;
+    public void setAdmCriador(User admCriador) {
+        this.admCriador = admCriador;
     }
 
     public String getMaterialDidatico() {
@@ -66,7 +66,11 @@ public class Curso {
         this.materialDidatico = materialDidatico;
     }
 
-    public Long getId() {
-        return id;
+    public List<Treinamento> getTreinamentosCurso() {
+        return treinamentosCurso;
+    }
+
+    public void setTreinamentosCurso(List<Treinamento> treinamentosCurso) {
+        this.treinamentosCurso = treinamentosCurso;
     }
 }
