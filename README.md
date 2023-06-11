@@ -89,6 +89,7 @@ Cargos precisam estar EXATAMENTE do mesmo formato acima.
 ```
 {
   "id": 1,
+  "titulo": "Quiz sobre Geografia",
   "perguntas": [
     {
       "id": 1,
