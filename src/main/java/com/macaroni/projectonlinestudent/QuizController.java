@@ -43,6 +43,15 @@ public class QuizController {
         }
     }
 
+    @GetMapping("/adm/users")
+    public ResponseEntity<List<User>>indexUsers(){
+        Optional<List<User>>users = Optional.of(userRepository.findAll());
+        if(users.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(users.get());
+    }
+
     @GetMapping("/quizzes/{id}")
     public ResponseEntity<Quiz>quizDetails(@PathVariable("id")Long id){
         try {
