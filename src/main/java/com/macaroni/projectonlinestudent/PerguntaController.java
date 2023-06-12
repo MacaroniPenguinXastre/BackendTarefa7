@@ -28,7 +28,7 @@ public class PerguntaController {
     @GetMapping("/adm/{id}/perguntas")
     public ResponseEntity<List<Pergunta>> showAllQuests(@PathVariable("id")Long id){
         try{
-            Optional<User>user = Optional.of(userRepository.getReferenceById(id));
+            Optional<User>user = userRepository.findById(id);
             if(user.isEmpty()){
                 throw new NullPointerException();
             }
