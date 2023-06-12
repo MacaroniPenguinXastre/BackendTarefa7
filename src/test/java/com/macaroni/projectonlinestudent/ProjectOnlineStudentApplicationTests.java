@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
@@ -25,12 +26,13 @@ class ProjectOnlineStudentApplicationTests {
     private UserRepository userRepository;
 
     @Test
-    void testLoginwithEmailAndPassword(LoginDTO loginDTO){
+    void testLoginwithEmailAndPassword(){
         try{
-            User logginUser = userRepository.findUserByEmail(loginDTO.email());
-            assertNull(logginUser,"Existe um email?");
 
-            boolean result = securityConfig.passwordEncoder().matches(loginDTO.password(),logginUser.getPassword());
+            User logginUser = userRepository.findUserByEmail("admin@email.com");
+            assertNotNull(logginUser,"Existe um email?");
+
+            boolean result = securityConfig.passwordEncoder().matches("sudo",logginUser.getPassword());
             assertTrue("Senha correta?",result);
         }
         catch (NullPointerException e){
