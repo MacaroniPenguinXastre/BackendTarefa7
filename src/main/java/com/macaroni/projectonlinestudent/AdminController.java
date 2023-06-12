@@ -35,11 +35,8 @@ public class AdminController {
     private SecurityConfig securityConfig;
 
     @GetMapping("/adm/treinamentos")
-    public ResponseEntity<List<Treinamento>> showAllTreinamentos(@RequestBody User user){
+    public ResponseEntity<List<Treinamento>> showAllTreinamentos(){
         try {
-            if(!user.getCargo().equals(CargoUser.ADM)){
-                return ResponseEntity.status(403).build();
-            }
             List<Treinamento>allTreinamentos = treinamentoRepository.findAll();
             return ResponseEntity.ok().body(allTreinamentos);
         }
@@ -58,24 +55,23 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/adm/treinamentos")
-    public ResponseEntity<?> createTreinamento(@RequestBody TreinamentoDTO treinamentoDTO){
-        if(treinamentoDTO == null){
+    @PostMapping("/adm/{id}/treinamentos")
+    public ResponseEntity<?> createTreinamento(@RequestBody Treinamento treinamento,@PathVariable("id")Long id){
+        if(treinamento == null){
             return ResponseEntity.badRequest().build();
         }
-
         try{
-            Treinamento newTreinamento = treinamentoDTO.treinamento();
+            Treinamento newTreinamento = treinamento;
+            Optional<User>user = userRepository.findById(id);
 
-            if(!userDetailService.isAdm(treinamentoDTO.user())){
+            if(user.isEmpty() ||!userDetailService.isAdm(user.get())){
                 return ResponseEntity.status(403).build();
             }
-
-            if(treinamentoService.checkDate(treinamentoDTO.treinamento().getDataInicioTreinamento(), treinamentoDTO.treinamento().getDataFimTreinamento())
-                    || treinamentoService.checkDate(treinamentoDTO.treinamento().getDataInicioInscricao(), treinamentoDTO.treinamento().getDataFimInscricao())){
+            if(treinamentoService.checkDate(treinamento.getDataInicioTreinamento(), treinamento.getDataFimTreinamento())
+                    || treinamentoService.checkDate(treinamento.getDataInicioInscricao(),treinamento.getDataFimInscricao())){
                 return ResponseEntity.status(409).build();
             }
-            newTreinamento = treinamentoService.convertToSPZone(newTreinamento);
+
             treinamentoRepository.save(newTreinamento);
             return ResponseEntity.ok().build();
         }
@@ -83,8 +79,6 @@ public class AdminController {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
-
-
     }
 
     @PostMapping("/adm/users")
@@ -106,4 +100,18 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/adm/users/{id}")
+    public ResponseEntity<User> userDetail(@PathVariable("id")Long id){
+        try {
+            Optional<User>user = userRepository.findById(id);
+            if (user.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok().body(user.get());
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

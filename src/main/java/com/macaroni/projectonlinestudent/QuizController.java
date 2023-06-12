@@ -28,7 +28,10 @@ public class QuizController {
     @GetMapping("/adm/{id}/quizzes")
     public ResponseEntity<List<Quiz>> indexQuizByUser(@PathVariable("id")Long id){
         try{
-            Optional<User>user = Optional.of(userRepository.getReferenceById(id));
+            Optional<User>user = userRepository.findById(id);
+            if(user.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
             if(!user.get().getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }

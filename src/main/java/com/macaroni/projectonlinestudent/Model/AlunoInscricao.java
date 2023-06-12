@@ -1,8 +1,11 @@
 package com.macaroni.projectonlinestudent.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import org.springframework.lang.Nullable;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -30,8 +33,8 @@ public class AlunoInscricao {
 
     @Enumerated(EnumType.STRING)
     private StatusTreinamento statusTreino;
-
-    private ZonedDateTime dataInscricao;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private LocalDateTime dataInscricao;
 
     public Submissao getQuizIntroducao() {
         return quizIntroducao;
@@ -87,12 +90,11 @@ public class AlunoInscricao {
         this.statusTreino = statusTreino;
     }
 
-    public ZonedDateTime getDataInscricao() {
+    public LocalDateTime getDataInscricao() {
         return dataInscricao;
     }
 
-    public void setDataInscricao(ZonedDateTime dataInscricao) {
+    public void setDataInscricao(LocalDateTime dataInscricao) {
         this.dataInscricao = dataInscricao;
     }
-
 }

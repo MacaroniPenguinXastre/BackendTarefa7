@@ -7,9 +7,11 @@ import com.macaroni.projectonlinestudent.Model.Pergunta;
 import com.macaroni.projectonlinestudent.Model.User;
 import com.macaroni.projectonlinestudent.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,20 +73,17 @@ public class PerguntaController {
     @DeleteMapping("/adm/{id}/perguntas/{idPergunta}")
     public ResponseEntity<String> deleteQuest(@PathVariable("id")Long idAdm,@PathVariable("idPergunta")Long idPergunta){
         try {
-            Optional<User>user = Optional.of(userRepository.getReferenceById(idAdm));
-            Optional<Pergunta>pergunta = Optional.of(perguntaRepository.getReferenceById(idPergunta));
+            Optional<User>user = userRepository.findById(idAdm);
+            Optional<Pergunta>pergunta = perguntaRepository.findById(idPergunta);
             if(user.isEmpty() || pergunta.isEmpty()){
                 throw new NullPointerException();
-            }
-            if(!pergunta.get().getQuizAssociados().isEmpty()){
-                return ResponseEntity.status(409).body("Question is associated with one or more Quizzes.");
             }
             perguntaRepository.delete(pergunta.get());
             return ResponseEntity.ok().body("Deleted successfully");
         }
-        catch (NullPointerException e){
+        catch (DataIntegrityViolationException | NullPointerException e){
             e.printStackTrace();
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(409).body("Question is associated with one or more Quizzes.");
         }
     }
 

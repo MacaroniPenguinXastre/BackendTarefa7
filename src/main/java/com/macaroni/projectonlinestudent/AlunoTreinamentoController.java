@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +79,8 @@ public class AlunoTreinamentoController {
             if(aluno.isEmpty() || treinamento.isEmpty()){
                 return ResponseEntity.badRequest().build();
             }
-            if(ZonedDateTime.now(values.defaultZone).isAfter(treinamento.get().getDataFimInscricao())
-            || ZonedDateTime.now(values.defaultZone).isBefore(treinamento.get().getDataInicioInscricao())){
+            if(LocalDateTime.now(values.defaultZone).isAfter(treinamento.get().getDataFimInscricao())
+            || LocalDateTime.now(values.defaultZone).isBefore(treinamento.get().getDataInicioInscricao())){
                 return ResponseEntity.status(409).build();
             }
             AlunoInscricao inscricao = alunoInscricaoRepository.findAlunoInscricaoByAlunoAndTreinamento(aluno.get(),treinamento.get());
@@ -88,7 +89,7 @@ public class AlunoTreinamentoController {
                 inscricao = new AlunoInscricao();
                 inscricao.setAluno(aluno.get());
                 inscricao.setTreinamento(treinamento.get());
-                inscricao.setDataInscricao(ZonedDateTime.now(values.defaultZone));
+                inscricao.setDataInscricao(LocalDateTime.now(values.defaultZone));
                 inscricao.setStatusTreino(StatusTreinamento.INSCRITO);
                 alunoInscricaoRepository.save(inscricao);
                 return ResponseEntity.ok().body(inscricao);
@@ -117,7 +118,7 @@ public class AlunoTreinamentoController {
                 return ResponseEntity.badRequest().build();
             }
             //Se o aluno já fez o teste OU tentou fazer uma submissão APÓS o fim do treinamento, a submissão não é realizada
-            if(ZonedDateTime.now(values.defaultZone).isAfter(alunoInscricao.get().getTreinamento().getDataFimTreinamento()) ||
+            if(LocalDateTime.now(values.defaultZone).isAfter(alunoInscricao.get().getTreinamento().getDataFimTreinamento()) ||
                     submissao.get().getNota() != values.notDone || alunoInscricao.get().getStatusTreino().equals(StatusTreinamento.REPROVADO)){
                 return ResponseEntity.status(409).build();
             }

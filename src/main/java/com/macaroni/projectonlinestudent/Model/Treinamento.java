@@ -1,7 +1,9 @@
 package com.macaroni.projectonlinestudent.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -16,14 +18,16 @@ public class Treinamento {
     private String nomeComercial;
 
     private String descricao;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private LocalDateTime dataInicioInscricao;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private LocalDateTime dataFimInscricao;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private LocalDateTime dataInicioTreinamento;
 
-    private ZonedDateTime dataInicioInscricao;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
 
-    private ZonedDateTime dataFimInscricao;
-
-    private ZonedDateTime dataInicioTreinamento;
-
-    private ZonedDateTime dataFimTreinamento;
+    private LocalDateTime dataFimTreinamento;
 
     private int quantidadeMinima;
 
@@ -43,6 +47,35 @@ public class Treinamento {
 
     @ManyToOne
     private Quiz segundoCase;
+
+
+    public LocalDateTime getDataInicioInscricao() {
+        return dataInicioInscricao;
+    }
+
+    public void setDataInicioInscricao(LocalDateTime dataInicioInscricao) {
+        this.dataInicioInscricao = dataInicioInscricao;
+    }
+
+    public LocalDateTime getDataFimInscricao() {
+        return dataFimInscricao;
+    }
+
+    public void setDataFimInscricao(LocalDateTime dataFimInscricao) {
+        this.dataFimInscricao = dataFimInscricao;
+    }
+
+    public LocalDateTime getDataInicioTreinamento() {
+        return dataInicioTreinamento;
+    }
+
+    public void setDataInicioTreinamento(LocalDateTime dataInicioTreinamento) {
+        this.dataInicioTreinamento = dataInicioTreinamento;
+    }
+
+    public LocalDateTime getDataFimTreinamento() {
+        return dataFimTreinamento;
+    }
 
     public Long getId() {
         return id;
@@ -72,35 +105,9 @@ public class Treinamento {
         this.descricao = descricao;
     }
 
-    public ZonedDateTime getDataInicioInscricao() {
-        return dataInicioInscricao;
-    }
 
-    public void setDataInicioInscricao(ZonedDateTime dataInicioInscricao) {
-        this.dataInicioInscricao = dataInicioInscricao;
-    }
 
-    public ZonedDateTime getDataFimInscricao() {
-        return dataFimInscricao;
-    }
-
-    public void setDataFimInscricao(ZonedDateTime dataFimInscricao) {
-        this.dataFimInscricao = dataFimInscricao;
-    }
-
-    public ZonedDateTime getDataInicioTreinamento() {
-        return dataInicioTreinamento;
-    }
-
-    public void setDataInicioTreinamento(ZonedDateTime dataInicioTreinamento) {
-        this.dataInicioTreinamento = dataInicioTreinamento;
-    }
-
-    public ZonedDateTime getDataFimTreinamento() {
-        return dataFimTreinamento;
-    }
-
-    public void setDataFimTreinamento(ZonedDateTime dataFimTreinamento) {
+    public void setDataFimTreinamento(LocalDateTime dataFimTreinamento) {
         this.dataFimTreinamento = dataFimTreinamento;
     }
 

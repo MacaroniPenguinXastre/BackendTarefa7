@@ -25,10 +25,15 @@ public class VagasEmpregoController {
     private AlunoInscricaoRepository alunoInscricaoRepository;
 
 
-    @GetMapping("/vagas")
-    public ResponseEntity<List<VagasEmprego>>listAllVagas(@RequestBody User user){
+    @GetMapping("/parceiro/{id}/vagas")
+    public ResponseEntity<List<VagasEmprego>>listAllVagas(@PathVariable("id")Long id){
         try {
-            if(!user.getCargo().equals(CargoUser.EMPRESA_PARCEIRA) && !user.getCargo().equals(CargoUser.ADM)){
+            Optional<User>user = userRepository.findById(id);
+            if(user.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
+
+            if(!user.get().getCargo().equals(CargoUser.EMPRESA_PARCEIRA) && !user.get().getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }
             List<VagasEmprego>vagasEmpregos = vagasEmpregoRepository.findAll();
