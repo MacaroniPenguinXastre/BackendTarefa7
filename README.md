@@ -1,6 +1,7 @@
 # BackendTarefa7
-Repositório do backend da tarefa 77
+A API desenvolvida neste projeto foi construída em Java, utilizando o popular framework Spring. O Spring é amplamente utilizado na construção de aplicativos web e fornece um conjunto abrangente de recursos para facilitar o desenvolvimento de sistemas robustos e escaláveis.
 
+Esta é uma REST API, o que significa que segue os princípios da arquitetura REST. A arquitetura REST é amplamente adotada na construção de APIs web, pois oferece uma abordagem simples, flexível e escalável para a comunicação entre clientes e servidores.
 
 
 ## Como fazer requisições para.
