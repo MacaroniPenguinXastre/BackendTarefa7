@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import org.springframework.lang.Nullable;
-
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.List;
+
 
 @Entity
 public class AlunoInscricao {
