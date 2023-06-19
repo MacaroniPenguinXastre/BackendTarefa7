@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface AlunoInscricaoRepository extends JpaRepository<AlunoInscricao, Long> {
     public List<AlunoInscricao>findAlunoInscricaosByAluno_Id(Long id);
 
+    Optional<AlunoInscricao> findAlunoInscricaoByAluno_IdAndTreinamento_Id(Long alunoID,Long treinoID);
+
     AlunoInscricao findAlunoInscricaoByAlunoAndTreinamento(User user,Treinamento treinamento);
 
     Optional<AlunoInscricao>findAlunoInscricaoByAluno_IdAndStatusTreinoAndTreinamento_Id(Long id, StatusTreinamento statusTreinamento, Long treinamentoID);

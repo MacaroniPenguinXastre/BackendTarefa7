@@ -21,8 +21,20 @@ public class Submissao {
     private Quiz quiz;
 
     private int nota;
+
     @ElementCollection
     private Map<Pergunta, Character>respostas;
+
+    public Submissao(User aluno, Treinamento treinamentos, Quiz quiz,int notaInicial) {
+        this.aluno = aluno;
+        this.treinamentos = treinamentos;
+        this.quiz = quiz;
+        this.setNota(notaInicial);
+    }
+
+    public Submissao(){
+
+    }
 
     public Map<Pergunta, Character> getRespostas() {
         return respostas;

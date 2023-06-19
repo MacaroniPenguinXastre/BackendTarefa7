@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface VagasEmpregoRepository extends JpaRepository<VagasEmprego, Long> {
     List<VagasEmprego> findVagasEmpregosByTreinamentoRequisito_Id(Long id);
+
+    Optional<VagasEmprego>findVagasEmpregoByTreinamentoRequisito_Id(Long id);
 }

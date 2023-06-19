@@ -59,6 +59,7 @@ public class PerguntaController {
     @PostMapping("/perguntas")
     public ResponseEntity<?> createQuest(@RequestBody Pergunta pergunta){
         try {
+
             if(!pergunta.getAdmCriador().getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }

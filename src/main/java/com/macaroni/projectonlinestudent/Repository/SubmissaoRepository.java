@@ -14,4 +14,6 @@ public interface SubmissaoRepository extends JpaRepository<Submissao,Long> {
 
     Optional<List<Submissao>>findFirst10ByAluno_IdOrderByIdDesc(Long id);
 
+    Optional<Submissao>findSubmissaoByTreinamentos_Id(Long id);
+
 }

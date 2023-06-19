@@ -66,9 +66,9 @@ public class Controller {
     @GetMapping("/adm/{id}/cursos")
     public ResponseEntity<List<Curso>> allCourses(@PathVariable("id")Long id){
         try{
-            User user = userRepository.getReferenceById(id);
+            Optional<User> user = userRepository.findById(id);
 
-            if(user == null || !user.getCargo().equals(CargoUser.ADM)){
+            if(user.isEmpty() || !user.get().getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }
             List<Curso>cursoList = cursoRepository.findAll();

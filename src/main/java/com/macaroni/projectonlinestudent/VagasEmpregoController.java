@@ -47,6 +47,36 @@ public class VagasEmpregoController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @DeleteMapping("/parceiro/{id}/vagas/{vagaID}")
+    public ResponseEntity<?>deleteVaga(@PathVariable("id")Long idUser,@PathVariable("vagaID")Long vagaID){
+        try {
+            Optional<User>user = userRepository.findById(idUser);
+            Optional<VagasEmprego>vagasEmprego = vagasEmpregoRepository.findById(vagaID);
+            if(user.isEmpty() || vagasEmprego.isEmpty()){
+                return ResponseEntity.badRequest().build();
+            }
+            //Se a vaga a ser excluída NÃO pertencer ao mentor, é barrado
+            if(!vagasEmprego.get().getEmpresa().equals(user.get())){
+                return ResponseEntity.status(403).build();
+            }
+
+            return ResponseEntity.ok().build();
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    //Retorna apenas Empresas Parceiras
+    @GetMapping("/users/parceiros/vagas")
+    public ResponseEntity<List<User>>showAllPartners(){
+        Optional<List<User>>parceiros = userRepository.findUsersByCargo(CargoUser.EMPRESA_PARCEIRA);
+        if(parceiros.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(parceiros.get());
+    }
+
     @GetMapping("/vagas/{id}")
     public ResponseEntity<VagasEmprego>vagaEmpregoDetails(@PathVariable("id")Long id) {
         Optional<VagasEmprego>vagasEmprego = vagasEmpregoRepository.findById(id);
@@ -60,12 +90,10 @@ public class VagasEmpregoController {
     @PostMapping("/vagas")
     public ResponseEntity<?>createVagaEmprego(@RequestBody VagasEmprego vagasEmprego){
         try {
-
             if(!vagasEmprego.getEmpresa().getCargo().equals(CargoUser.EMPRESA_PARCEIRA) &&
                     !vagasEmprego.getEmpresa().getCargo().equals(CargoUser.ADM)){
                 return ResponseEntity.status(403).build();
             }
-
             if(vagasEmprego.getTreinamentoRequisito() == null){
                 return ResponseEntity.badRequest().build();
             }
@@ -99,5 +127,7 @@ public class VagasEmpregoController {
         vagasEmpregoRepository.save(vagasEmprego.get());
         return ResponseEntity.ok().build();
     }
+
+
 
 }

@@ -42,10 +42,26 @@ public class AlunoTreinamentoController {
 
     @GetMapping("/treinamentos/available")
     public ResponseEntity<List<Treinamento>> listAllAvailableTreinamentos(){
-        List<Treinamento>allAvailable = treinamentoRepository.findTreinamentosByDataFimInscricaoBefore(ZonedDateTime.now(values.defaultZone));
+        List<Treinamento>allAvailable = treinamentoRepository.findTreinamentosByDataFimInscricaoAfter(LocalDateTime.now());
         return ResponseEntity.ok().body(allAvailable);
     }
 
+    //Lista todas as inscrições por um aluno que ainda NÃO venceram
+    @GetMapping("aluno/{id}/inscricao/available")
+    public ResponseEntity<List<AlunoInscricao>> listAllSubscribeTreinamentosAvailable(@PathVariable("id")Long userID){
+        try{
+            List<AlunoInscricao>inscricoes = alunoInscricaoRepository.findAlunoInscricaosByAluno_Id(userID);
+            for(int i = 0; i < inscricoes.size();i++){
+                if(LocalDateTime.now().isAfter(inscricoes.get(i).getTreinamento().getDataFimTreinamento())){
+                    inscricoes.remove(i);
+                }
+            }
+            return ResponseEntity.ok().body(inscricoes);
+        }
+        catch(NullPointerException e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
     //Lista todas as inscrições por um aluno
     @GetMapping("aluno/{id}/inscricao")
     public ResponseEntity<List<AlunoInscricao>> listAllSubscribeTreinamentos(@PathVariable("id")Long userID){
@@ -56,6 +72,22 @@ public class AlunoTreinamentoController {
         catch(NullPointerException e){
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("aluno/{alunoID}/treinamento/{treinoID}")
+    public ResponseEntity<AlunoInscricao>checkIfIsSubscribed(@PathVariable("alunoID")Long userID,
+                                                             @PathVariable("treinoID")Long treinoID){
+        Optional<User>aluno = userRepository.findById(userID);
+        Optional<Treinamento>treinamento = treinamentoRepository.findById(treinoID);
+
+        if(aluno.isEmpty() || treinamento.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+        Optional<AlunoInscricao>inscricao = alunoInscricaoRepository.findAlunoInscricaoByAluno_IdAndTreinamento_Id(userID,treinoID);
+        if(inscricao.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(inscricao.get());
     }
 
     //Detalhe da inscrição feita por um aluno.
@@ -71,16 +103,20 @@ public class AlunoTreinamentoController {
 
     //Faz inscrição de um aluno em um treinamento
     @PostMapping("aluno/{alunoID}/treinamentos/{treinamentoID}/inscricao")
-    public ResponseEntity<?>subscribeAluno(@PathVariable("alunoID")Long alunoID,@PathVariable("treinamentoID")Long treinoID){
+    public ResponseEntity<?>subscribeAluno(@PathVariable("alunoID")Long alunoID,@PathVariable("treinamentoID")Long treinoID,
+                                           @RequestBody Boolean subscribe){
         try{
             Optional<User>aluno = userRepository.findById(alunoID);
             Optional<Treinamento>treinamento = treinamentoRepository.findById(treinoID);
 
             if(aluno.isEmpty() || treinamento.isEmpty()){
+
                 return ResponseEntity.badRequest().build();
             }
+
             if(LocalDateTime.now(values.defaultZone).isAfter(treinamento.get().getDataFimInscricao())
             || LocalDateTime.now(values.defaultZone).isBefore(treinamento.get().getDataInicioInscricao())){
+
                 return ResponseEntity.status(409).build();
             }
             AlunoInscricao inscricao = alunoInscricaoRepository.findAlunoInscricaoByAlunoAndTreinamento(aluno.get(),treinamento.get());
@@ -91,11 +127,29 @@ public class AlunoTreinamentoController {
                 inscricao.setTreinamento(treinamento.get());
                 inscricao.setDataInscricao(LocalDateTime.now(values.defaultZone));
                 inscricao.setStatusTreino(StatusTreinamento.INSCRITO);
+
+                Submissao testeAptidao = new Submissao(aluno.get(),treinamento.get(),treinamento.get().getTesteAptidao(), values.notDone);
+                Submissao caseOne = new Submissao(aluno.get(),treinamento.get(),treinamento.get().getPrimeiroCase(),values.notDone);
+                Submissao caseTwo = new Submissao(aluno.get(),treinamento.get(),treinamento.get().getSegundoCase(),values.notDone);
+
+                submissaoRepository.save(testeAptidao);
+                submissaoRepository.save(caseOne);
+                submissaoRepository.save(caseTwo);
+
+                inscricao.setQuizIntroducao(testeAptidao);
+                inscricao.setCaseOne(caseOne);
+                inscricao.setCaseTwo(caseTwo);
+
                 alunoInscricaoRepository.save(inscricao);
                 return ResponseEntity.ok().body(inscricao);
             }
+            if(subscribe == true){
+                inscricao.setStatusTreino(StatusTreinamento.INSCRITO);
+            }
+            else {
+                inscricao.setStatusTreino(StatusTreinamento.CANCELADO);
+            }
 
-            inscricao.setStatusTreino(StatusTreinamento.INSCRITO);
             alunoInscricaoRepository.save(inscricao);
             return ResponseEntity.ok().body(inscricao);
         }
@@ -124,7 +178,7 @@ public class AlunoTreinamentoController {
             }
 
             Quiz quiz = submissao.get().getQuiz();
-
+            submissao.get().setNota(0);
             Map<Long, Character> respostasSubmetidas = quizRespostasDTO.respostas();
             double quantidadeAcertos = 0;
             int totalQuestoes = quiz.getPerguntas().size();
@@ -152,9 +206,7 @@ public class AlunoTreinamentoController {
                         alunoInscricao.get().setStatusTreino(StatusTreinamento.REPROVADO);
                     }
                 }
-
                 submissao.get().setNota((int)nota);
-
                 submissaoRepository.save(submissao.get());
                 alunoInscricaoRepository.save(alunoInscricao.get());
 

@@ -26,7 +26,6 @@ public class Treinamento {
     private LocalDateTime dataInicioTreinamento;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-
     private LocalDateTime dataFimTreinamento;
 
     private int quantidadeMinima;
