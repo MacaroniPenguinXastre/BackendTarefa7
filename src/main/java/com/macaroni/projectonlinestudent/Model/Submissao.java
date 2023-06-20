@@ -23,7 +23,7 @@ public class Submissao {
     private int nota;
 
     @ElementCollection
-    private Map<Pergunta, Character>respostas;
+    private Map<Long, Character>respostas;
 
     public Submissao(User aluno, Treinamento treinamentos, Quiz quiz,int notaInicial) {
         this.aluno = aluno;
@@ -36,11 +36,11 @@ public class Submissao {
 
     }
 
-    public Map<Pergunta, Character> getRespostas() {
+    public Map<Long, Character> getRespostas() {
         return respostas;
     }
 
-    public void setRespostas(Map<Pergunta, Character> respostas) {
+    public void setRespostas(Map<Long, Character> respostas) {
         this.respostas = respostas;
     }
 

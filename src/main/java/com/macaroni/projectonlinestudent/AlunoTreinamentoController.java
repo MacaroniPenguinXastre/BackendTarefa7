@@ -43,6 +43,7 @@ public class AlunoTreinamentoController {
     @GetMapping("/treinamentos/available")
     public ResponseEntity<List<Treinamento>> listAllAvailableTreinamentos(){
         List<Treinamento>allAvailable = treinamentoRepository.findTreinamentosByDataFimInscricaoAfter(LocalDateTime.now());
+
         return ResponseEntity.ok().body(allAvailable);
     }
 
@@ -51,13 +52,16 @@ public class AlunoTreinamentoController {
     public ResponseEntity<List<AlunoInscricao>> listAllSubscribeTreinamentosAvailable(@PathVariable("id")Long userID){
         try{
             List<AlunoInscricao>inscricoes = alunoInscricaoRepository.findAlunoInscricaosByAluno_Id(userID);
+            System.out.println(inscricoes);
             for(int i = 0; i < inscricoes.size();i++){
                 if(LocalDateTime.now().isAfter(inscricoes.get(i).getTreinamento().getDataFimTreinamento())){
                     inscricoes.remove(i);
                 }
             }
+            System.out.println(inscricoes);
             return ResponseEntity.ok().body(inscricoes);
         }
+
         catch(NullPointerException e){
             return ResponseEntity.badRequest().build();
         }
@@ -67,12 +71,15 @@ public class AlunoTreinamentoController {
     public ResponseEntity<List<AlunoInscricao>> listAllSubscribeTreinamentos(@PathVariable("id")Long userID){
         try{
             List<AlunoInscricao>inscricoes = alunoInscricaoRepository.findAlunoInscricaosByAluno_Id(userID);
+
             return ResponseEntity.ok().body(inscricoes);
         }
         catch(NullPointerException e){
             return ResponseEntity.badRequest().build();
         }
     }
+
+
 
     @GetMapping("aluno/{alunoID}/treinamento/{treinoID}")
     public ResponseEntity<AlunoInscricao>checkIfIsSubscribed(@PathVariable("alunoID")Long userID,
@@ -195,7 +202,7 @@ public class AlunoTreinamentoController {
                     }
 
                     //Adiciona referência a pergunta
-                    submissao.get().getRespostas().put(pergunta.get(),alternativaAluno);
+                    submissao.get().getRespostas().put(pergunta.get().getId(),alternativaAluno);
                 }
             }
                 double nota = (quantidadeAcertos/(double)totalQuestoes)*100;
@@ -206,6 +213,7 @@ public class AlunoTreinamentoController {
                         alunoInscricao.get().setStatusTreino(StatusTreinamento.REPROVADO);
                     }
                 }
+
                 submissao.get().setNota((int)nota);
                 submissaoRepository.save(submissao.get());
                 alunoInscricaoRepository.save(alunoInscricao.get());
@@ -222,7 +230,7 @@ public class AlunoTreinamentoController {
     @GetMapping("aluno/{id}/submissoes")
     public ResponseEntity<List<Submissao>>listAlunoSubmissoes(@PathVariable("id")Long alunoID){
         try{
-            List<Submissao>submissoesAluno = submissaoRepository.findSubmissaosByAluno(alunoID);
+            List<Submissao>submissoesAluno = submissaoRepository.findSubmissaosByAluno_Id(alunoID);
             if(submissoesAluno.isEmpty()){
                 return ResponseEntity.noContent().build();
             }

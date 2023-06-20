@@ -10,10 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface SubmissaoRepository extends JpaRepository<Submissao,Long> {
-    List<Submissao>findSubmissaosByAluno(Long id);
+    List<Submissao>findSubmissaosByAluno_Id(Long id);
 
     Optional<List<Submissao>>findFirst10ByAluno_IdOrderByIdDesc(Long id);
 
     Optional<Submissao>findSubmissaoByTreinamentos_Id(Long id);
+
+
 
 }
