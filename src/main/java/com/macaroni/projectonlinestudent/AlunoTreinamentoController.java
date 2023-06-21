@@ -150,6 +150,10 @@ public class AlunoTreinamentoController {
                 alunoInscricaoRepository.save(inscricao);
                 return ResponseEntity.ok().body(inscricao);
             }
+            if(inscricao.getStatusTreino().equals(StatusTreinamento.REPROVADO)){
+                return ResponseEntity.status(409).build();
+            }
+
             if(subscribe == true){
                 inscricao.setStatusTreino(StatusTreinamento.INSCRITO);
             }
